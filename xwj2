@@ -1,0 +1,205 @@
+@Override
+	public String toArrays(String a, String b) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String toArrayss(String a, String b) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String BufferH() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+@Override
+	public String text6() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+}
+
+
+
+/*
+ * String ccc = "1.1,1.2,1.3;2.1,2.2,2.3;3.1,3.2,3.3"; String[] cc =
+ * ccc.split(";"); for (int i = 0; i < cc.length; i++) { String[] c =
+ * cc[i].split(","); for (int j = 0; j < c.length; j++) {
+ * System.out.println(c[j]); } }
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+接口汇总
+package com.huawei.it.purpr.test.service;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+
+@Path("/test51")
+@Produces("text/html")
+public interface ITest51svervic {
+	@GET
+	@Path("/CreateString")
+	String CreateString();
+
+	
+	
+	
+	@GET
+	@Path("/Concatenation")
+	String Concatenation();
+
+	@GET
+	@Path("/IndexOf")
+	String IndexOf();
+
+	@GET
+	@Path("/startsWith")
+	String startsWith();
+
+	@GET
+	@Path("/endsWith")
+	String endsWith();
+
+	@GET
+	@Path("/toArray")
+	String toArray(); 
+
+	//http://localhost.huawei.com:60010/pr/services/api/testService2/test2/toArrays/t11/zhangsan
+	@GET
+	@Path("/toArrays/{a}/{b}")
+	String toArrays(@PathParam("a") String a, @PathParam("b") String b); 
+	
+	//http://localhost.huawei.com:60010/pr/services/api/testService2/test2/toArrayss?a=t11&b=zhangsan
+	@GET
+	@Path("/toArrayss")
+	String toArrayss(@QueryParam("a") String a, @QueryParam("b") String b); 
+
+	@GET
+	@Path("/Buffer/{checi}/{renming}")
+	String Buffer(@PathParam("checi") String checi, @PathParam("renming") String renming); 
+
+	@GET
+	@Path("/Split/{element}/{menu}")
+	String Split(@PathParam("element") String checi, @PathParam("menu") String renming); 
+	
+	
+	@GET
+	@Path("/Person")
+	String Person();
+
+	@GET
+	@Path("/Person1")
+	String Person1();
+
+
+	@GET
+	@Path("/SplitH")
+	String SplitH();
+	
+	@GET
+	@Path("/Personname")
+	String  Personname();
+
+	@GET
+	@Path("/BufferH")
+	String BufferH();
+	
+	@GET
+	@Path("/StartsWith")
+	String StartsWith();
+	
+	@GET
+	@Path("/HtmlTest1")
+	String HtmlTest1();
+
+	
+	@GET
+	@Path("/HtmlTest2")
+	String HtmlTest2();
+
+
+	@GET
+	@Path("/text6")
+	String text6();
+	
+	
+
+
+
+
+
+
+
+}
+
+表格项目接口
+package com.huawei.it.purpr.test.service;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+
+@Path("/subproject")
+@Produces("text/html")
+public interface ISubprojectSvervice {
+	@GET
+	@Path("/showSubprojectList")
+	String showSubprojectList();
+
+}
+
+
+
+
+
+
+
+
+服务器配置
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+	http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
+
+	
+	<jaxrs:server id="purprTestServiceRest" address="/api/testService">
+		<jaxrs:serviceBeans>
+			<ref bean="testService"/>
+			<ref bean="testService2"/>
+            <ref bean="test51Svervic"/>	
+            <ref bean="test6Svervic"/>	
+            <ref bean="subprojectTestSvervice"/>	
+       </jaxrs:serviceBeans>
+		<jaxrs:providers>
+			<ref bean="jsonProvider"/>
+			<ref bean="errorHandlerProvider"/>        	
+		</jaxrs:providers>
+	</jaxrs:server>
+</beans>
