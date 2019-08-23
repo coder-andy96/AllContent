@@ -1,0 +1,765 @@
+1.构造函数
+package com.huawei.it.purpr.test6;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.huawei.it.jalor5.rules.fel.function.operator.Sub;
+
+public class Project {
+
+	private Long projectId;
+	private String projectCode;
+	private String projectName;
+	private String status;
+	private List<Subproject> subprojectList = new ArrayList<Subproject>();
+
+	public Project() {
+	}
+
+	public Project(String projectCode, String projectName) {
+		this.projectCode = projectCode;
+		this.projectName = projectName;
+	}
+	/*public Project(String projectCode, String projectName,List<Subproject> subprojectList) {
+		this.projectCode = projectCode;
+		this.projectName = projectName;
+		this.subprojectList = subprojectList;
+		
+	}
+*/
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
+	}
+
+	public String getProjectCode() {
+		return projectCode;
+	}
+
+	public void setProjectCode(String projectCode) {
+		this.projectCode = projectCode;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public List<Subproject> getSubprojectList() {
+		return subprojectList;
+	}
+
+	public void setSubprojectList(List<Subproject> subprojectList) {
+		this.subprojectList = subprojectList;
+	}
+
+}
+2.初始化
+package com.huawei.it.purpr.test6;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class SubprojectInit {
+
+	public static List<Subproject> initsubprojectList(){
+		List<Subproject> list1=new ArrayList<Subproject>();
+		Subproject sp1 = new Subproject("9000000","other0991","华服深圳营改增","Published","2009/8/8","2010/8/8");
+		Subproject sp2 = new Subproject("5501115","3026021","Z-305","Closed","2008/6/1","2010/6/1");
+		Subproject sp3 = new Subproject("5500560","3023332","BT FTTC Phase 2","Terminated","2009/8/8","2010/8/8");
+		Subproject sp4 = new Subproject("5590014","3901518","中国地区部_RTAC CS网络维护子项目_3901518","Published","2014/1/1","2018/1/31");
+		Subproject sp5 = new Subproject("5590161","3901708","Virtual Project of HQ Spare Parts Service Delivery","Published","2009/8/8","2010/8/8");
+		
+		list1.add(sp1);
+		list1.add(sp2);
+		list1.add(sp3);
+		list1.add(sp4);
+		list1.add(sp5);
+		return list1;
+
+	}
+	
+	public static List<Project> initProjectList(){
+		List<Project> list =new ArrayList<Project>();
+		Project p1 = new Project("9000000", "Enteprise Common Project(For china Only,3");
+		Subproject sp11 = new Subproject();
+		sp11.setProject(p1);
+		sp11.setSubprojectCode("other0991");
+		sp11.setSubprojectName("华服深圳营改增");
+		sp11.setSubprojectStatus("Published");
+		sp11.setSubprojectStarTime("2011/10/20");
+		sp11.setSubprojectEndTime("2013/4/1");
+		p1.getSubprojectList().add(sp11);
+		Subproject sp12 = new Subproject();
+		sp12.setProject(p1);
+		sp12.setSubprojectCode("other0471");
+		sp12.setSubprojectName("安捷信");
+		sp12.setSubprojectStatus("Published");
+		sp12.setSubprojectStarTime("2011/10/20");
+		sp12.setSubprojectEndTime("2013/4/1");
+		p1.getSubprojectList().add(sp12);
+		Subproject sp13 = new Subproject();
+		sp13.setProject(p1);
+		sp13.setSubprojectCode("other0451");
+		sp13.setSubprojectName("华为服务");
+		sp13.setSubprojectStatus("Published");
+		sp13.setSubprojectStarTime("2011/10/20");
+		sp13.setSubprojectEndTime("2019/4/1");
+		p1.getSubprojectList().add(sp13);
+		Subproject sp14 = new Subproject();
+		sp14.setProject(p1);
+		sp14.setSubprojectCode("other0041");
+		sp14.setSubprojectName("业软");
+		sp14.setSubprojectStatus("Published");
+		sp14.setSubprojectStarTime("2011/10/20");
+		sp14.setSubprojectEndTime("2014/4/1");
+		p1.getSubprojectList().add(sp14);
+		
+		Project p2 = new Project("5501115", "VDF/Arcor SDH & WDM 2009 Project");
+		Subproject sp15 = new Subproject();
+		sp15.setProject(p2);
+		sp15.setSubprojectCode("4001962");
+		sp15.setSubprojectName("(PSF only) VF / Arcor SDH & WDM 2009 Project");
+		sp15.setSubprojectStatus("Published");
+		sp15.setSubprojectStarTime("2008/6/1");
+		sp15.setSubprojectEndTime("2015/12/31");
+		p2.getSubprojectList().add(sp15);
+		Subproject sp16 = new Subproject();
+		sp16.setProject(p2);
+		sp16.setSubprojectCode("4000721");
+		sp16.setSubprojectName("VF / Arcor SDH & WDM 2009 Project D2");
+		sp16.setSubprojectStatus("Published");
+		sp16.setSubprojectStarTime("2008/6/1");
+		sp16.setSubprojectEndTime("2014/12/31");
+		p2.getSubprojectList().add(sp16);
+		Subproject sp17 = new Subproject();
+		sp17.setProject(p2);
+		sp17.setSubprojectCode("4000301");
+		sp17.setSubprojectName("VF / Arcor SDH & WDM 2009 Project");
+		sp17.setSubprojectStatus("Published");
+		sp17.setSubprojectStarTime("2008/6/1");
+		sp17.setSubprojectEndTime("2015/12/31");
+		p2.getSubprojectList().add(sp17);
+		Subproject sp18 = new Subproject();
+		sp18.setProject(p2);
+		sp18.setSubprojectCode("4000161");
+		sp18.setSubprojectName("DE-2714-CIS106409-00F2761513000B-SUB-PSF-320");
+		sp18.setSubprojectStatus("Published");
+		sp18.setSubprojectStarTime("2013/3/20");
+		sp18.setSubprojectEndTime("2023/3/18");
+		p2.getSubprojectList().add(sp18);
+		Subproject sp19 = new Subproject();
+		sp19.setProject(p2);
+		sp19.setSubprojectCode("4000101");
+		sp19.setSubprojectName("DE-2714-CIS102479-00F2760512230A-SUB-PSF-307");
+		sp19.setSubprojectStatus("Published");
+		sp19.setSubprojectStarTime("2013/3/19");
+		sp19.setSubprojectEndTime("2023/3/17");
+		p2.getSubprojectList().add(sp19);
+		
+		Project p3 = new Project("5500560", "BT FTTC AN Project");
+		Subproject sp20 = new Subproject();
+		sp20.setProject(p3);
+		sp20.setSubprojectCode("4113351");
+		sp20.setSubprojectName("FTTC_NGA1_Vectoring");
+		sp20.setSubprojectStatus("Published");
+		sp20.setSubprojectStarTime("2017/6/30");
+		sp20.setSubprojectEndTime("2020/3/31");
+		p3.getSubprojectList().add(sp20);
+		Subproject sp21 = new Subproject();
+		sp21.setProject(p3);
+		sp21.setSubprojectCode("4020894");
+		sp21.setSubprojectName("BT FTTC AN Project spre part British Telecommunications Plc");
+		sp21.setSubprojectStatus("Published");
+		sp21.setSubprojectStarTime("2008/6/1");
+		sp21.setSubprojectEndTime("2015/3/29");
+		p3.getSubprojectList().add(sp21);
+		Subproject sp22 = new Subproject();
+		sp22.setProject(p3);
+		sp22.setSubprojectCode("4016706");
+		sp22.setSubprojectName("BT FTTC AN Project- -Service Sub Project");
+		sp22.setSubprojectStatus("Published");
+		sp22.setSubprojectStarTime("2008/6/1");
+		sp22.setSubprojectEndTime("2015/3/29");
+		p3.getSubprojectList().add(sp22);
+		Subproject sp23 = new Subproject();
+		sp23.setProject(p3);
+		sp23.setSubprojectCode("399851G");
+		sp23.setSubprojectName("00082614021622.IBJADULF.BT FTTC AN Project");
+		sp23.setSubprojectStatus("Closed");
+		sp23.setSubprojectStarTime("2008/6/1");
+		sp23.setSubprojectEndTime("2015/3/29");
+		p3.getSubprojectList().add(sp23);
+		Subproject sp24 = new Subproject();
+		sp24.setProject(p3);
+		sp24.setSubprojectCode("399851G");
+		sp24.setSubprojectName("00082614021622.IBJADULF.BT FTTC AN Project");
+		sp24.setSubprojectStatus("Closed");
+		sp24.setSubprojectStarTime("2008/6/1");
+		sp24.setSubprojectEndTime("2015/3/29");
+		p3.getSubprojectList().add(sp24);
+		
+		Project p4 = new Project("5590014", "中国区TAC项目");
+		Subproject sp25 = new Subproject();
+		sp25.setProject(p4);
+		sp25.setSubprojectCode("3901518");
+		sp25.setSubprojectName("中国地区部_RTAC CS网络维护子项目_3901518");
+		sp25.setSubprojectStatus("Published");
+		sp25.setSubprojectStarTime("2014/1/1");
+		sp25.setSubprojectEndTime("2018/1/31");
+		p4.getSubprojectList().add(sp25);
+		Subproject sp26 = new Subproject();
+		sp26.setProject(p4);
+		sp26.setSubprojectCode("384805J");
+		sp26.setSubprojectName("中国地区部_RTAC 工程技术支持分摊子项目");
+		sp26.setSubprojectStatus("Published");
+		sp26.setSubprojectStarTime("2014/1/1");
+		sp26.setSubprojectEndTime("2016/12/31");
+		p4.getSubprojectList().add(sp26);
+		Subproject sp27 = new Subproject();
+		sp27.setProject(p4);
+		sp27.setSubprojectCode("347388L");
+		sp27.setSubprojectName("中国地区部_RTAC远程交付子项目");
+		sp27.setSubprojectStatus("Published");
+		sp27.setSubprojectStarTime("2008/6/1");
+		sp27.setSubprojectEndTime("2018/12/31");
+		p4.getSubprojectList().add(sp27);
+		
+		Project p5 = new Project("5590161", "Vitural Project of HQ Spare Parts Service Delivery");
+		Subproject sp28 = new Subproject();
+		sp28.setProject(p5);
+		sp28.setSubprojectCode("3981360");
+		sp28.setSubprojectName("3rd repair project");
+		sp28.setSubprojectStatus("Published");
+		sp28.setSubprojectStarTime("2008/6/1");
+		sp28.setSubprojectEndTime("2015/6/1");
+		p5.getSubprojectList().add(sp28);
+		
+		Subproject sp29 = new Subproject();
+		sp29.setProject(p5);
+		sp29.setSubprojectCode("3901708");
+		sp29.setSubprojectName("Virtual Project of HQ Spare Parts Service Delivery");
+		sp29.setSubprojectStatus("Published");
+		sp29.setSubprojectStarTime("2009/8/8");
+		sp29.setSubprojectEndTime("2010/8/8 ");
+		p5.getSubprojectList().add(sp29);
+		
+		list.add(p1);
+		list.add(p2);
+		list.add(p3);
+		list.add(p4);
+		list.add(p5);
+		return list;
+	}
+}
+3.页面展示
+package com.huawei.it.purpr.test6;
+
+import java.util.List;
+
+public class SubprojectView {
+
+	public static String getHtmlStrBySubprojectList(List<Subproject> list1) {
+		// 实例化StringBuffer对象
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("<html>").append("\n");
+		sb.append("<head>").append("\n");
+		sb.append("<title>综合练习</title>").append("\n");
+		sb.append("<style>").append("\n");
+		sb.append(".cont{font-weight:bolder;font-size:30px;font-family:'黑体';margin:0px;}").append("\n");
+		sb.append(".top{font-weight:bold;font-size:25px;font-family:'仿宋';}").append("\n");
+		sb.append(".bottom{font-weight:bolder;font-size:14px; margin:5px 0px;padding=0;}").append("\n");
+		sb.append("</style>").append("\n");
+		sb.append("</head>").append("\n");
+		sb.append("<body>").append("\n");
+		sb.append("<div id='title' clss='cont'>").append("\n");
+		sb.append("<span>最近使用项目列表</span>").append("\n"); // 黑体 / 黑色 / 加粗
+		sb.append("<hr height=25px color='EEEEEE'>").append("\n");
+		sb.append("</div>").append("\n");
+		sb.append("<div id='search' class='top'>").append("\n");
+		sb.append("<input type='text' splaceholder='请输入项目编码'>").append("<input type='submit' value='查询'>").append("\n");
+		sb.append("</div>").append("\n");
+		sb.append("<div id='result' class='bottom'>").append("\n");
+		sb.append("<table border='1' style='border-spacing:0px'>").append("\n");
+		sb.append("<tr style='background-color:#F0F0F0'>").append("\n");
+		sb.append("<th align='center' style='border-top:0px; border-left:0px;'>序号</th>").append("\n");
+		sb.append("<th style='border-top:0px; border-left:0px;'>项目编号</th>").append("\n");
+		sb.append("<th style='border-top:0px; border-left:0px;'>子项目编号</th>").append("\n");
+		sb.append("<th style='border-top:0px; border-left:0px;'>子项目名称</th>").append("\n");
+		sb.append("<th style='border-top:0px; border-left:0px;'>子项目状态</th>").append("\n");
+		sb.append("<th style='border-top:0px; border-left:0px;'>子项目开启时间</th>").append("\n");
+		sb.append("<th style='border-top:0px; border-left:0px; border-right:0px;'>子项目结束时间</th>").append("\n");
+		sb.append("</tr>").append("\n");
+		sb.append("</div>").append("\n");
+		if (list1.size() > 0) {
+			for (int i = 0; i < list1.size(); i++) {
+				Subproject ss = list1.get(i);
+
+				// 最后一行移除底线
+				String borderBotton = "";
+				if (i == list1.size() - 1) {
+					borderBotton = "border-bottom:0px;";
+				}
+				String background = "";
+				// 偶数行颜色为red
+				if (i % 2 == 0) {
+					background = "background-color:99CCFF;";
+				}
+				String backcolor = "";
+				// 奇数行颜色为green
+				if (i % 2 == 1) {
+					backcolor = "background-color:DDDDDD;";
+				}
+
+				sb.append("<tr style='" + background + "" + backcolor + "'>").append("\n");
+				sb.append("<td align='center' style='" + borderBotton + "border-top:0px; border-left:0px;'>" + (i + 1)
+						+ "</td>").append("\n");
+				sb.append("<td style='" + borderBotton + "border-top:0px; border-left:0px;'>"
+						+ ss.getProject().getProjectCode() + "</td>").append("\n");
+				sb.append("<td style='" + borderBotton + "border-top:0px; border-left:0px;'>" + ss.getSubprojectCode()
+						+ "</td>").append("\n");
+
+				String subprojectName = ss.getSubprojectName();
+				if (subprojectName.length() > 41) {
+					subprojectName = subprojectName.substring(0, 40) + "...";
+				}
+				sb.append("<td style='" + borderBotton + "border-top:0px; border-left:0px;'><span title='"
+						+ ss.getSubprojectName() + "'>" + subprojectName + "</span></td>").append("\n");
+				sb.append("<td style='" + borderBotton + "border-top:0px; border-left:0px;'>" + ss.getSubprojectStatus()
+						+ "</td>").append("\n");
+				sb.append("<td style='" + borderBotton + "border-top:0px; border-left:0px;'>"
+						+ ss.getSubprojectStarTime() + " </td>").append("\n");
+				sb.append("<td style='" + borderBotton + "border-top:0px; border-left:0px; border-right:0px;'> "
+						+ ss.getSubprojectEndTime() + "</td>").append("\n");
+				sb.append("</tr>").append("\n");
+			}
+		} else {
+			sb.append("<tr>").append("\n");
+			sb.append("<td colspan='5' align=center>集合为空</td>").append("\n");
+			sb.append("</tr>").append("\n");
+		}
+		sb.append("</table>").append("\n");
+		sb.append("</div>").append("\n");
+		sb.append("</body>").append("\n");
+		sb.append("</html>").append("\n");
+		return sb.toString();
+
+	}
+}
+4.实现
+package com.huawei.it.purpr.test6;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.inject.Named;
+
+import com.huawei.it.purpr.test.service.ISubprojectSvervice;
+
+@Named("subprojectTestSvervice")
+public class SubprojectSvervice implements ISubprojectSvervice {
+
+	@Override
+	public String showSubprojectList() {
+		// 初始化所有数据（项目+子项目）
+		List<Project> projectList = SubprojectInit.initProjectList(); // 数据字典，类似于数据库
+		//将项目编码通过逗号分隔。
+		String projectCode = "5501115,5590161,5590161";
+		String[] arr = projectCode.split(",");
+
+		Set<String> set = new HashSet<String>(Arrays.asList(arr));
+
+		List<Subproject> subprojectList = new ArrayList<Subproject>();
+		for (int j = 0; j < Arrays.asList(set).size(); j++) {
+			for (int i = 0; i < projectList.size(); i++) {
+				Project project = projectList.get(i);
+				if (Arrays.asList(set).get(j).equals(project.getProjectCode())) {
+					List<Subproject> subprojectList1 = project.getSubprojectList();
+					subprojectList.addAll(subprojectList1);
+				}
+			}
+		//返回htmls字符串
+		}
+
+		return SubprojectView.getHtmlStrBySubprojectList(subprojectList);
+	}
+}
+package com.huawei.it.purpr.test5;
+
+import javax.inject.Named;
+
+import com.huawei.it.purpr.test.service.ITest51svervic;
+
+
+@Named
+public class Test51Svervic implements ITest51svervic {
+
+	@Override
+	public String CreateString() {
+		String a = "时间就是金钱";
+		System.out.println("a=" + a);
+		String b = new String("我爱小肥羊");
+		String c = new String(b);
+		System.out.println("b=" + b);
+		System.out.println("c=" + c);
+		char[] charArray = { 'a', 'b', 'c' };
+		String d = new String(charArray, 2, 1);
+		System.out.println("d=" + d);
+		return "a,b,c,d";
+
+	}
+
+	@Override
+	public String Concatenation() {
+		String str = "床前明月光";
+		char ch = str.charAt(3);
+		System.out.println("索引上第四个字符为：" + ch);
+
+		return "ch";
+	}
+
+	@Override
+	public String IndexOf() {
+		String reStr = "";
+		String str = "明月几时有";
+		int charIndex = str.indexOf(",");
+		if (charIndex != -1) {
+			reStr = "字符串中逗号索引为" + charIndex;
+			System.out.println("字符串中逗号索引为" + charIndex);
+		} else {
+			reStr = "字符串中不存在都好的索引";
+			System.out.println("字符串中不存在都好的索引");
+		}
+		return reStr;
+	}
+
+	@Override
+	public String startsWith() {
+		String appliance[] = { "美的电磁炉", "海尔冰箱", "海尔空调", "美的榨汁机", "海尔电视" };
+		int sum = 0;
+		for (int i = 0; i < appliance.length; i++) {
+			String name = appliance[i];
+			if (name.startsWith("海尔")) {
+				sum++;
+			}
+		}
+		return "海尔开头的电器有" + sum + "种";
+	}
+
+	@Override
+	public String endsWith() {
+		// 定义初始化变量
+		String licensePlates[] = { "12345", "32145", "78565", "45464", "5545" };
+		String number = "4";
+		System.out.println("今日限号" + number + "限制出行的车牌有：");
+
+		// 循环遍历变量
+		for (int i = 0; i < licensePlates.length; i++) {
+			if (licensePlates[i].endsWith(number)) {
+				System.out.println();
+			}
+		}
+
+		return "licensePlates[i]";
+	}
+
+	@Override
+	public String toArray() {
+		String str = "这是一个字符串";
+		String reStr = "";
+
+		char ch[] = str.toCharArray();
+
+		for (int i = 0; i < ch.length; i++) {
+			reStr += "数组第" + i + "个元素是" + ch[i] + "\n";
+			// System.out.println("数组第" + i + "个元素是" + ch[i]);
+
+		}
+		return reStr;
+	}
+
+	@Override
+	public String Buffer(String checi, String renming) {
+		StringBuffer sb = new StringBuffer();
+		String[][] arr = new String[5][4];
+		arr[0] = new String[] { "9000000", "Enteprise Common Project(For china Only)", "addfile", "readfile"};
+		arr[1] = new String[] { "5501115", "VDF/Arcor SDH & WDM 2009 Project", "addfile", "readfile"};
+		arr[2] = new String[] { "5500560", "BT FTTC AN Project", "addfile", "readfile"};
+		arr[3] = new String[] { "5590014", "中国区TAC项目", "addfile", "readfile"};
+		arr[4] = new String[] { "5590161", "Vitural Project of HQ Spare Parts Service Delivery", "addfile", "readfile"};
+		sb.append("<html>").append("\n");
+		sb.append("<head>").append("\n");
+		sb.append("<title>第五章练习1</title>").append("\n");
+		sb.append("<head>").append("\n");
+		sb.append("<body>").append("\n");
+		sb.append("<table border='1'>").append("\n");
+		sb.append("<tr>").append("\n");
+		sb.append("<td>车次</td>").append("\n");
+		sb.append("<td>出发站-到达站</td>").append("\n");
+		sb.append("<td>出发时间</td>").append("\n");
+		sb.append("<td>到达时间</td>").append("\n");
+		sb.append("<td>历时</td>").append("\n");
+		for (int i = 0; i < 5; i++) {
+			sb.append("<tr>").append("\n");
+			for (int j = 0; j < 4; j++) {
+				sb.append("<td>" + arr[i][j] + "</td>").append("\n");
+			}
+
+			sb.append("</tr>").append("\n");
+		}
+		sb.append("</table>").append("\n");
+		sb.append("请输入要购买的车次</br>").append("\n");
+		sb.append("<input type='text' value='T298'></br>").append("\n");
+		sb.append("请输入乘车人（用逗号分隔）</br>").append("\n");
+		sb.append("<input type='text' value='李四,张三'></br>").append("\n");
+		sb.append("<input type='button' value='确认'></br>").append("\n");
+		sb.append("您已购T298次列车 长春-北京 00:06开，请李四张三尽快换取纸质车票").append("\n");
+		sb.append("</body>").append("\n");
+		sb.append("</html>").append("\n");
+		return sb.toString();
+	}
+
+	@Override
+	public String Split(String element, String menu) {
+		StringBuffer sb = new StringBuffer();
+		String a = "蒸羊羊蒸熊掌，蒸鹿尾，烧花鸭，烧雏鸡，烧子鹅，卤煮咸鸭，酱鸡，腊肉，松花小肚";
+		String denal[] = a.split("，");
+		sb.append("<html>").append("\n");
+		sb.append("<head>").append("\n");
+		sb.append("<title>第五章练习2</title>").append("\n");
+		sb.append("</head>").append("\n");
+		sb.append("<body>").append("\n");
+		for (int i = 0; i < denal.length; i++) {
+			sb.append("索引" + i + "的元素:" + denal[i]).append("</br>").append("\n");
+		}
+		sb.append("</body>").append("\n");
+		sb.append("</html>").append("\n");
+		return sb.toString();
+	}
+
+	@Override
+	public String Person() {
+		StringBuffer sb = new StringBuffer();
+		String personname = "宋江,卢俊义,林冲,鲁智深,武松";
+		String personnickname = "及时雨,玉麒麟,豹子头,花和尚,行者";
+		String[] arr = personname.split(",");
+		String[] arr1 = personnickname.split(",");
+		sb.append("<html>").append("\n");
+		sb.append("<head>").append("\n");
+		sb.append("<title>第五章练习3</title>").append("\n");
+		sb.append("<head>").append("\n");
+		sb.append("<body>").append("\n");
+		for (int i = 0; i < arr.length; i++) {
+			sb.append(arr[i]).append("-").append(arr1[i]).append("</br>").append("\n");
+			System.out.println(arr[i] + "-" + arr1[i]);
+		}
+		sb.append("</body>").append("\n");
+		sb.append("</html>").append("\n");
+		return sb.toString();
+	}
+
+	@Override
+	public String Person1() {
+		StringBuffer sb = new StringBuffer();
+		String[][] arr = new String[2][5];
+		arr[0] = new String[] { "宋江", "卢俊义", "林冲", "鲁智深", "武松" };
+		arr[1] = new String[] { "及时雨", "玉麒麟", "豹子头", "花和尚", "行者" };
+		sb.append("<html>").append("\n");
+		sb.append("<head>").append("\n");
+		sb.append("<title>第五章练习3</title>").append("\n");
+		sb.append("<head>").append("\n");
+		sb.append("<body>").append("\n");
+		for (int j = 0; j < 5; j++) {
+			for (int i = 0; i < 2; i++) {
+				sb.append(arr[i][j]);
+				if (i == 0) {
+					sb.append("-");
+				} else if (i == 1) {
+					sb.append("</br>").append("\n");
+				}
+				System.out.println(arr[i][j]);
+			}
+		}
+		sb.append("</body>").append("\n");
+		sb.append("</html>").append("\n");
+		return sb.toString();
+	}
+
+	@Override
+	public String SplitH() {
+		StringBuffer sb = new StringBuffer();
+		String a = "蒸羊羊，蒸熊掌，蒸鹿尾，烧花鸭，烧雏鸡，烧子鹅，卤煮咸鸭，酱鸡，腊肉，松花小肚";
+		String denal[] = a.split("，");
+		sb.append("<html>").append("\n");
+		sb.append("<head>").append("\n");
+		sb.append("<title align=center>菜品选择</title>").append("\n");
+		sb.append("</head>").append("\n");
+		sb.append("<body>").append("\n");
+		sb.append("<h1><em>所有菜品</em></h1>").append("\n");
+		sb.append("<table align=center border='1'>").append("\n");
+		sb.append("<caption>菜品展示</caption>").append("\n");
+		sb.append("<tr>").append("\n");
+		sb.append("<th align=center>索引</th>").append("\n");
+		sb.append("<th align=center>菜品</th>").append("\n");
+		sb.append("</tr>").append("\n");
+		for (int i = 0; i < denal.length; i++) {
+			sb.append("<tr>").append("\n");
+			sb.append("<td>索引" + i + "的元素:</td>" ).append("\n");
+			sb.append("<td>"+denal[i]+"</td>").append("\n");
+			sb.append("</tr>").append("\n");
+		}
+		sb.append("</table>").append("\n");
+		sb.append("</body>").append("\n");
+		sb.append("</html>").append("\n");
+		System.out.println(sb.toString());
+		return sb.toString();
+	}
+
+	@Override
+	public String Personname() {
+		StringBuffer sb = new StringBuffer();
+		String personname = "宋江,卢俊义,林冲,鲁智深,武松";
+		String personnickname = "及时雨,玉麒麟,豹子头,花和尚,行者";
+		String[] arr = personname.split(",");
+		String[] arr1 = personnickname.split(",");
+		sb.append("<html>").append("\n");
+		sb.append("<head>").append("\n");
+		sb.append("<title>第五章练习3</title>").append("\n");
+		sb.append("<head>").append("\n");
+		sb.append("<body>").append("\n");
+		sb.append("<table align=center border='10'>").append("\n");
+		sb.append("<caption>水浒英雄</scaption>").append("\n");
+		sb.append("<tr bgcolor=#FCD1C0>").append("\n");
+		sb.append("<th>名字</th>").append("\n");
+		sb.append("<th>绰号</th>").append("\n");
+		sb.append("</tr>").append("\n");
+		for (int i = 0; i < arr.length; i++) {
+			sb.append("<tr bgcolor=#A5FEDE>").append("\n");
+			sb.append("<td>"+arr[i]+"</td>").append("\n");
+			sb.append("<td>"+arr1[i]+"</td>").append("\n");
+			sb.append("</tr>").append("\n");
+		}
+		sb.append("</table>").append("\n");
+		sb.append("</body>").append("\n");
+		sb.append("</html>").append("\n");
+		return sb.toString();
+		}
+	
+
+	
+	@Override
+	public String StartsWith( ) {
+		StringBuffer sb = new StringBuffer();
+		String[]appliance={"美的烤箱","海尔冰箱","格力空调"};
+		String[]appliance1={"烤面包","储藏食品","调节温度"};
+		sb.append("<html>").append("\n");
+		sb.append("<head>").append("\n");
+		sb.append("<title>电器品牌</title>").append("\n");
+		sb.append("<head>").append("\n");
+		sb.append("<body>").append("\n");
+		sb.append("<table align=center border='20'>").append("\n");
+		sb.append("<caption>电器展示</caption>").append("\n");
+		sb.append("<tr bgcolor=#FCD1C0>").append("\n");
+		sb.append("<th>电器</th>").append("\n");
+		sb.append("<th>用途</th>").append("\n");
+		sb.append("</tr>").append("\n");
+		for (int i = 0; i < appliance.length; i++) {
+			sb.append("<tr bgcolor=#A5FEDE>").append("\n");
+			sb.append("<td>"+appliance[i]+"</td>").append("\n");
+			sb.append("<td>"+appliance1[i]+"</td>").append("\n");
+			sb.append("</tr>").append("\n");
+		}
+	    sb.append("</table>").append("\n");
+		sb.append("</body>").append("\n");
+		sb.append("</html>").append("\n");
+	    return sb.toString();
+	}
+	
+	@Override
+	public String HtmlTest1( ) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("<html>").append("\n");
+		sb.append("<head>").append("\n");
+		sb.append("<title>DIY个人简历</title>").append("\n");
+		sb.append("<head>").append("\n");
+		sb.append("<body>").append("\n");
+		sb.append("<br><br><br><br><br>").append("\n");
+		sb.append("<div>").append("\n");
+		sb.append("<h1>个人信息(Person Info)</h1>").append("\n");
+		sb.append("<hr>").append("\n");
+		sb.append("<h5>姓名：李刚&nbsp;&nbsp;出生年月日：1996.05</h5>").append("\n");
+		sb.append("<h5>民族：汉&nbsp;&nbsp;身高：177cm</h5>").append("\n");
+		sb.append("</div>").append("\n");
+		sb.append("<br><br>").append("\n");
+		sb.append("<div>").append("\n");
+		sb.append("<h1>教育背景(Education)</h1>").append("\n");
+		sb.append("<h5>2005.07-2009.06&nbsp;&nbsp;师范大学&nbsp;&nbsp;市场营销(本科)</h5>").append("\n");
+		sb.append("<h5>2009.07-2012.06&nbsp;&nbsp;师范大学&nbsp;&nbsp;电子商务(研究生)</h5>").append("\n");
+		sb.append("<h5>2012.07-2015.06&nbsp;&nbsp;师范大学&nbsp;&nbsp;电子商务(博士)</h5>").append("\n");
+		sb.append("</div>").append("\n");
+		sb.append("</body>").append("\n");
+		sb.append("</html>").append("\n");
+        return sb.toString();
+        }
+	
+	
+	public String HtmlTest2( ) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("<html>").append("\n");
+		sb.append("<head>").append("\n");
+		//sb.append( "<link href=C:\Users\xWX797029\Desktop\html+java网页展示\个人档案资料.css type="text/css" rel="stylesheet">");
+		sb.append("<title>无序列表</title>").append("\n");
+		sb.append("</head>").append("\n");
+		sb.append("<body>").append("\n");
+		sb.append("<div class=mr-cont>").append("\n");
+		sb.append("<form>").append("\n");
+		sb.append("<div=mess>").append("\n");
+		sb.append("<div>星座").append("\n");
+		sb.append("<select>").append("\n");
+		sb.append("<option>水瓶座<option>").append("\n");
+		sb.append("<option>金牛座<option>").append("\n");
+		sb.append("<option>其他星座<option>").append("\n");
+		sb.append("</select>").append("\n");
+		sb.append("</div>").append("\n");
+		sb.append("<div>血型").append("\n");
+		sb.append("<select>").append("\n");
+		sb.append("<option>A型<option>").append("\n");
+		sb.append("<option>B型<option>").append("\n");
+		sb.append("<option>AB型<option>").append("\n");
+		sb.append("<option>O型<option>").append("\n");
+		sb.append("</select>").append("\n");
+		sb.append("</div>").append("\n");
+		sb.append("<div>生肖").append("\n");
+		sb.append("<select>").append("\n");
+		sb.append("<option>鼠<option>").append("\n");
+		sb.append("<option>牛<option>").append("\n");
+		sb.append("<option>猪<option>").append("\n");
+		sb.append("<option>其他生肖<option>").append("\n");
+		sb.append("</select>").append("\n");
+		sb.append("</div>").append("\n");
+		sb.append("</div>").append("\n");
+		sb.append("</form>").append("\n");
+		sb.append("</body>").append("\n");
+		sb.append("</html>").append("\n");
+		return sb.toString();
+	}
