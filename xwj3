@@ -1,0 +1,362 @@
+1.	创建对象
+2.	package com.huawei.it.purpr.test.vo;
+3.	
+4.	
+5.	
+6.	public class Project1VO {
+7.	
+8.		private Long projectId;
+9.		private String projectCode;
+10.		private String projectName;
+11.		private String status;
+12.		private String projectStarTime;
+13.		private String projectEndTime;
+14.		
+15.	
+16.		public Project1VO() {
+17.		}
+18.	
+19.		public Project1VO(String projectCode, String projectName,String status,String projectStarTime,String projectEndTime) {
+20.			this.projectCode = projectCode;
+21.			this.projectName = projectName;
+22.			this.status = status;
+23.			this.projectStarTime=projectStarTime;
+24.			this.projectEndTime=projectEndTime;
+25.		}
+26.	
+27.		public Long getProjectId() {
+28.			return projectId;
+29.		}
+30.	
+31.		public void setProjectId(Long projectId) {
+32.			this.projectId = projectId;
+33.		}
+34.	
+35.		public String getProjectCode() {
+36.			return projectCode;
+37.		}
+38.	
+39.		public void setProjectCode(String projectCode) {
+40.			this.projectCode = projectCode;
+41.		}
+42.	
+43.		public String getProjectName() {
+44.			return projectName;
+45.		}
+46.	
+47.		public void setProjectName(String projectName) {
+48.			this.projectName = projectName;
+49.		}
+50.	
+51.		public String getProjectStarTime() {
+52.			return projectStarTime;
+53.		}
+54.	
+55.		public void setProjectStarTime(String projectStarTime) {
+56.			this.projectStarTime = projectStarTime;
+57.		}
+58.	
+59.		public String getProjectEndTime() {
+60.			return projectEndTime;
+61.		}
+62.	
+63.		public void setProjectEndTime(String projectEndTime) {
+64.			this.projectEndTime = projectEndTime;
+65.		}
+66.	
+67.		public String getStatus() {
+68.			return status;
+69.		}
+70.	
+71.		public void setStatus(String status) {
+72.			this.status = status;
+73.		}
+2.访问层-接口
+package com.huawei.it.purpr.test.service;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+
+
+@Path("/project1")
+@Produces("text/html")
+public interface IProject1Service {
+
+	@GET
+	@Path("/showProject1")
+	String showProject(@QueryParam("projectCode") String projectCode);
+}
+
+
+3.访问层-实现
+package com.huawei.it.purpr.test.service.impl;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import com.huawei.it.purpr.test.service.ICellProject1Service;
+import com.huawei.it.purpr.test.service.IProject1Service;
+import com.huawei.it.purpr.test.vo.Project1VO;
+import com.huawei.it.purpr.test6.service.impl.ProjectView;
+
+@Named
+public class Project1Service implements IProject1Service {
+
+	@Inject
+	ICellProject1Service cellProject1Service;
+
+	@Override
+	public String showProject(String projectCode) {
+
+		Project1VO project1VO = new Project1VO();
+		project1VO.setProjectCode("projectCode");
+
+		List<Project1VO> projectlist = cellProject1Service.getProject1Detail(project1VO);
+
+		List<Project1VO> project1List = new ArrayList<Project1VO>();
+		// 将传入的项目编码以逗号进行分割
+		String[] arr = projectCode.split(",");
+		// 当数组长度大于一时，精确查询
+		if (arr.length > 1) {
+			// 创建set集合，将数组转成list集合放入set集合
+			Set<String> set = new HashSet<String>(Arrays.asList(arr));
+			// 将set集合转为list集合
+			List<String> projectCodeList = new ArrayList<String>(set);
+			// 对项目编码进行遍历
+			for (int j = 0; j < projectCodeList.size(); j++) {
+				// 对初始化的项目集合进行遍历
+				for (int i = 0; i < projectlist.size(); i++) {
+					// 创建project对象
+					Project1VO project = projectlist.get(i);
+					// 判断项目编码是否与获取的项目编码相等
+					if (projectCodeList.get(j).equals(project.getProjectCode())) {
+						project1List.add(project);
+					}
+				}
+			}
+
+		} else {
+			// 对初始化的项目集合进行遍历
+			for (int i = 0; i < projectlist.size(); i++) {
+				// 创建project对象
+				Project1VO project = projectlist.get(i);
+				// 判断对象项目编码是否包含项目编码
+				if (project.getProjectCode().contains(projectCode)) {
+					project1List.add(project);
+
+					
+				}
+			}
+		}
+		return ProjectView.getHtmlStrByprojectList(projectlist);
+	}
+}
+
+// return iCellProject1Dao.getProject1Detail(project1VO);
+
+
+
+
+
+
+4.业务逻辑处理层-接口
+package com.huawei.it.purpr.test.service;
+
+
+import java.util.List;
+
+import com.huawei.it.purpr.test.vo.Project1VO;
+
+public interface ICellProject1Service {
+	List<Project1VO> getProject1Detail(Project1VO project1VO);
+}
+
+//业务逻辑处理层：对数据进行逻辑处理
+5.业务逻辑处理层-实现
+package com.huawei.it.purpr.test.service.impl;
+
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import com.huawei.it.jalor5.core.log.ILogger;
+import com.huawei.it.jalor5.core.log.JalorLoggerFactory;
+import com.huawei.it.purpr.common.util.PurUtil;
+import com.huawei.it.purpr.test.dao.ICellProject1Dao;
+import com.huawei.it.purpr.test.service.ICellProject1Service;
+import com.huawei.it.purpr.test.vo.Project1VO;
+
+@Named
+public class CellProject1Service implements ICellProject1Service {
+	private static final ILogger logger1 = JalorLoggerFactory.getLogger(CellProject1Service.class);
+	@Inject
+	private ICellProject1Dao iCellProject1Dao;
+	@Override
+	public List<Project1VO> getProject1Detail(Project1VO project1VO ) {
+		if (PurUtil.isEmpty(project1VO.getProjectId()) && PurUtil.isEmpty(project1VO.getProjectCode())
+				&& PurUtil.isEmpty(project1VO.getProjectName())) {
+			return null;
+
+		}
+		return iCellProject1Dao.getProject1Detail(project1VO);
+	}
+}
+
+6.DAO层接口
+package com.huawei.it.purpr.test.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+
+import com.huawei.it.purpr.test.vo.Project1VO;
+
+public interface ICellProject1Dao {
+	 List<Project1VO> getProject1Detail(@Param("project1VO") Project1VO project1VO);
+}
+ //数据访问层，对表和实体增删改查（持久化层）
+
+
+7.DAO层XML
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+                   
+<mapper namespace="com.huawei.it.purpr.test.dao.ICellProject1Dao">
+
+	<!--获取项目信息，包括配置-->
+	<select id="getProject1Detail" resultType="com.huawei.it.purpr.test.vo.Project1VO">
+		SELECT T.PROJECT_NUMBER AS "projectCode",
+		T.PROJECT_NAME AS "projectName",
+		T.STATUS AS "status",
+		T.START_DATE AS "projectStarTime",
+		T.END_DATE AS "projectEndTime"
+		FROM  EPROCPUB.ODS_CM_DELIVERY_PROJECTS_T T
+		WHERE ROWNUM <![CDATA[<]]> 11
+        AND T.PROJECT_NUMBER = #{project1VO.projectCode, jdbcType=VARCHAR}
+	</select>
+</mapper>
+
+
+8.展示页面
+package com.huawei.it.purpr.test6.service.impl;
+
+import java.util.List;
+
+import com.huawei.it.purpr.test.vo.Project1VO;
+
+public class ProjectView {
+
+	public static String getHtmlStrByprojectList(List<Project1VO> list) {
+
+		// 创建StringBuffer对象
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("<html>").append("\n");
+		sb.append("<head>").append("\n");
+		sb.append("<title>综合练习</title>").append("\n");
+		sb.append("<style>").append("\n");
+		sb.append(".cont{font-weight:bolder;font-size:30px;font-family:'黑体';margin:0px;}").append("\n");
+		sb.append(".top{font-weight:bold;font-size:25px;font-family:'仿宋';}").append("\n");
+		sb.append(".bottom{font-weight:bolder;font-size:14px; margin:5px 0px;padding=0;}").append("\n");
+		sb.append("</style>").append("\n");
+		sb.append("</head>").append("\n");
+		sb.append("<body>").append("\n");
+		sb.append("<script language='javascript'>").append("\n");
+		sb.append("function openNr(projectCode,ProjectName){alert('This Project is ' + projectCode+\", \"+ProjectName);console.log('This Project is ' + projectCode+ProjectName);}").append("\n");
+		sb.append("</script>").append("\n");
+		sb.append("<div id='title' clss='cont'>").append("\n");
+		sb.append("<span>最近使用项目列表</span>").append("\n"); // 黑体 / 黑色 / 加粗
+		sb.append("<hr height=25px color='EEEEEE'>").append("\n");
+		sb.append("</div>").append("\n");
+		sb.append("<div id='search' class='top'>").append("\n");
+		sb.append("<input type='text' splaceholder='请输入项目编码'>").append("<input type='submit' value='查询'>").append("\n");
+		sb.append("</div>").append("\n");
+		sb.append("<div id='result' class='bottom'>").append("\n");
+		sb.append("<table border='1' style='border-spacing:0px'>").append("\n");
+		sb.append("<tr style='background-color:#F0F0F0'>").append("\n"); // 仿宋 / 黑色 / 加粗 = th标签样式
+		sb.append("<th align='center' style='border-top:0px; border-left:0px;'>编号</th>").append("\n");
+		sb.append("<th style='border-top:0px; border-left:0px;'>项目编号</th>").append("\n");
+		sb.append("<th style='border-top:0px; border-left:0px;'>项目名称</th>").append("\n");
+		sb.append("<th style='border-top:0px; border-left:0px;'>项目状态</th>").append("\n");
+		sb.append("<th style='border-top:0px; border-left:0px;'>开始时间</th>").append("\n");
+		sb.append("<th style='border-top:0px; border-left:0px; border-right:0px;'>结束时间</th>").append("\n");
+		sb.append("</tr>").append("\n");
+		sb.append("</div>").append("\n");
+		if (list.size()>0){
+			for (int i = 0; i < list.size(); i++) {
+			Project1VO pp = list.get(i);
+			// 最后一行移除底线
+			String borderBotton = "";
+			if (i == list.size() - 1) {
+				borderBotton = "border-bottom:0px;";
+			}
+			String background = "";
+			// 偶数行颜色为red
+			if (i%2==0) {
+				background  = "background-color:99CCFF;";
+			}
+			String backcolor = "";
+			//奇数行颜色为green
+			if (i%2==1) {
+			    backcolor  = "background-color:DDDDDD;";
+						}
+			sb.append("<tr style='" + background + "" + backcolor + "'>").append("\n");
+			sb.append("<td align='center' style='" + borderBotton + "border-top:0px; border-left:0px;'>" + (i+1) + "</td>").append("\n");
+			sb.append("<td style='" + borderBotton + "border-top:0px; border-left:0px;'>" + pp.getProjectCode() + "</td>").append("\n");
+			// 项目名称
+			String project1VOName =pp.getProjectName();
+		    if (project1VOName.length()> 41) {
+		    	project1VOName  = project1VOName .substring(0, 40) + "...";
+				}
+			sb.append("<td style='" + borderBotton + "border-top:0px; border-left:0px;'><span title='" + pp.getProjectName() + "'>" + project1VOName  + "</span></td>").append("\n");
+			// This Project Code isxxxxxx
+			sb.append("<td style='" + borderBotton + "border-top:0px; border-left:0px;'>"+pp.getStatus()+"</td>").append("\n");
+			// This Project id is xxxxxx
+			sb.append("<td style='" + borderBotton + "border-top:0px; border-left:0px;'>"+pp.getProjectStarTime()+"</td>").append("\n");
+			sb.append("<td style='" + borderBotton + "border-top:0px; border-left:0px; border-right:0px;'> " +pp.getProjectEndTime() + "</td>").append("\n");
+			sb.append("</tr>").append("\n");
+			}
+			}else{
+			sb.append("</tr>").append("\n"); sb.append("<tr>").append("\n");
+			sb.append("<td colspan='5' align=center>集合为空</td>").append("\n");
+			sb.append("</tr>").append("\n");
+			}
+			sb.append("</table>").append("\n");
+			sb.append("</div>").append("\n");
+			sb.append("</body>").append("\n");
+			sb.append("</html>").append("\n");
+			return sb.toString();
+	}
+}
+
+
+9.服务器配置
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+	http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
+
+	
+	<jaxrs:server id="purprTestServiceRest" address="/api/testService">
+		<jaxrs:serviceBeans>
+            <ref bean="subprojectTestSvervice"/>
+            <ref bean="project1Service"/>
+        </jaxrs:serviceBeans>
+		<jaxrs:providers>
+			<ref bean="jsonProvider"/>
+			<ref bean="errorHandlerProvider"/>        	
+		</jaxrs:providers>
+	</jaxrs:server>
+</beans>
