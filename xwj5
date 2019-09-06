@@ -1,0 +1,536 @@
+1project1VO
+package com.huawei.it.purpr.test.vo;
+
+
+
+public class Project1VO {
+	private Long projectId;
+	private String projectCode;
+	private String projectName;
+	private String status;
+	private String projectStarTime;
+	private String projectEndTime;
+	
+
+	public Project1VO() {
+	}
+
+	public Project1VO(String projectCode, String projectName,String status,String projectStarTime,String projectEndTime) {
+		this.projectCode = projectCode;
+		this.projectName = projectName;
+		this.status = status;
+		this.projectStarTime=projectStarTime;
+		this.projectEndTime=projectEndTime;
+	}
+
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
+	}
+
+	public String getProjectCode() {
+		return projectCode;
+	}
+
+	public void setProjectCode(String projectCode) {
+		this.projectCode = projectCode;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+	public String getProjectStarTime() {
+		return projectStarTime;
+	}
+
+	public void setProjectStarTime(String projectStarTime) {
+		this.projectStarTime = projectStarTime;
+	}
+
+	public String getProjectEndTime() {
+		return projectEndTime;
+	}
+
+	public void setProjectEndTime(String projectEndTime) {
+		this.projectEndTime = projectEndTime;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+}
+2.subproject1VO
+package com.huawei.it.purpr.test.vo;
+
+public class Subproject1VO extends Base1VO{
+	private Project1VO project = new Project1VO();
+	private Long subprojectId;
+	private String subprojectCode;
+	private String subprojectName;
+	private String subprojectStatus;
+	private String subprojectStarTime;
+	private String subprojectEndTime;
+	/*private Long pageSize;
+	private Long currPage;*/
+	
+	public Subproject1VO() {
+	}
+
+	public Subproject1VO(String subprojectCode, String subprojectName, String subprojectStatus,
+			String subprojectStarTime, String subprojectEndTime) {
+		this.subprojectCode = subprojectCode;
+		this.subprojectName = subprojectName;
+		this.setSubprojectStatus(subprojectStatus);
+		this.subprojectStarTime = subprojectStarTime;
+		this.subprojectEndTime = subprojectEndTime;
+	}
+
+	public Long getSubprojectId() {
+		return subprojectId;
+	}
+
+	public void setSubprojectId(Long subprojectId) {
+		this.subprojectId = subprojectId;
+	}
+
+	public String getSubprojectCode() {
+		return subprojectCode;
+	}
+
+	public void setSubprojectCode(String subprojectCode) {
+		this.subprojectCode = subprojectCode;
+	}
+
+	public String getSubprojectName() {
+		return subprojectName;
+	}
+
+	public void setSubprojectName(String subprojectName) {
+		this.subprojectName = subprojectName;
+	}
+
+	public String getSubprojectStarTime() {
+		return subprojectStarTime;
+	}
+
+	public void setSubprojectStarTime(String subprojectStarTime) {
+		this.subprojectStarTime = subprojectStarTime;
+	}
+
+	public String getSubprojectEndTime() {
+		return subprojectEndTime;
+	}
+
+	public void setSubprojectEndTime(String subprojectEndTime) {
+		this.subprojectEndTime = subprojectEndTime;
+	}
+
+	public String getSubprojectStatus() {
+		return subprojectStatus;
+	}
+
+	public void setSubprojectStatus(String subprojectStatus) {
+		this.subprojectStatus = subprojectStatus;
+	}
+
+	public Project1VO getProject() {
+		return project;
+	}
+
+	public void setProject(Project1VO project) {
+		this.project = project;
+	}
+
+}
+3.PROJECT1访问接口
+package com.huawei.it.purpr.test.service;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+
+import com.huawei.it.jalor5.core.base.PageVO;
+import com.huawei.it.jalor5.core.base.PagedResult;
+import com.huawei.it.purpr.common.vo.ProjectVO;
+
+
+@Path("/project1")
+@Produces("text/html")
+public interface IProject1Service {
+
+	@GET
+	@Path("/showProject1ByProjectCode")
+	String showProject1ByProjectCode(@QueryParam("projectCode") String projectCode,@QueryParam("projectId") Long projectId);
+    
+	@GET
+	@Path("/showProject1ByProjectId")
+	String showProject1ByProjectId(@QueryParam("projectId") Long projectId);
+}
+4. PROJECT1访问层实现
+package com.huawei.it.purpr.test.service.impl;
+
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import com.huawei.it.purpr.test.service.ICellProject11Service;
+import com.huawei.it.purpr.test.service.ICellProject1Service;
+import com.huawei.it.purpr.test.service.IProject1Service;
+import com.huawei.it.purpr.test.vo.Project1VO;
+import com.huawei.it.purpr.test6.service.impl.Project1View;
+import com.huawei.it.purpr.test6.service.impl.ProjectView;
+
+@Named
+public class Project1Service implements IProject1Service {
+
+	@Inject
+	ICellProject1Service cellProject1Service;
+	@Inject
+	ICellProject11Service cellProject11Service;
+
+	@Override
+	public String showProject1ByProjectCode(String projectCode,Long projectId) {
+		Project1VO project1VO = new Project1VO();
+		project1VO.setProjectCode(projectCode);
+		project1VO.setProjectId(projectId);
+		List<Project1VO> projectlist =cellProject1Service.queryProjectListByCode(project1VO);
+		return ProjectView.getHtmlStrByprojectList(projectlist ,project1VO);  
+
+	}
+
+	@Override
+	public String showProject1ByProjectId(Long projectId) {
+		Project1VO project1VO = new Project1VO();
+		project1VO.setProjectId(projectId);
+		Project1VO projectlist =cellProject1Service.getProjectById(projectId);
+		String aaa  = Project1View.getHtmlStrByprojectList1(projectlist ,project1VO);  
+		return aaa  ;
+		
+	}
+}
+5.Project1业务层接口
+package com.huawei.it.purpr.test.service;
+
+
+import java.util.List;
+import com.huawei.it.purpr.test.vo.Project1VO;
+
+
+public interface ICellProject1Service {
+	//List<Project1VO> getProject1Detail(Project1VO project1VO);
+	
+	List<Project1VO> queryProjectListByCode(Project1VO project1VO);
+	
+	
+	Project1VO getProjectById(Long projectId);
+}
+
+//业务逻辑处理层：对数据进行逻辑处理
+6.业务层实现
+package com.huawei.it.purpr.test.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Named;
+import com.huawei.it.jalor5.core.log.ILogger;
+import com.huawei.it.jalor5.core.log.JalorLoggerFactory;
+import com.huawei.it.purpr.test.dao.ICellProject1Dao;
+import com.huawei.it.purpr.test.service.ICellProject1Service;
+import com.huawei.it.purpr.test.vo.Project1VO;
+
+@Named
+public class CellProject1Service implements ICellProject1Service {
+	private static final ILogger logger1 = JalorLoggerFactory.getLogger(CellProject1Service.class);
+	@Inject
+	private ICellProject1Dao iCellProject1Dao;
+
+	@Override
+	public List<Project1VO> queryProjectListByCode(Project1VO project1VO) {
+		List<Project1VO> project1List = new ArrayList<Project1VO>();
+		project1List = iCellProject1Dao.queryProjectListByCode(project1VO);
+		return project1List;
+	}
+
+	@Override
+	public Project1VO getProjectById(Long projectId) {
+		Project1VO project1VO = new Project1VO();
+		project1VO = iCellProject1Dao.getProjectById(projectId);
+		return project1VO;
+	}
+}
+7.dao层接口
+package com.huawei.it.purpr.test.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+import com.huawei.it.purpr.test.vo.Project1VO;
+
+
+public interface ICellProject1Dao {
+	//List<Project1VO> getProject1Detail(@Param("project1VO") Project1VO project1VO);
+	 
+	List<Project1VO> queryProjectListByCode(@Param("project1VO")Project1VO project1VO);
+		
+	Project1VO getProjectById(@Param("projectId")Long projectId);
+}
+ //数据访问层，对表和实体增删改查（持久化层）
+8.dao层xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+                   
+<mapper namespace="com.huawei.it.purpr.test.dao.ICellProject1Dao">
+
+	<select id="getProject1Detail" resultType="com.huawei.it.purpr.test.vo.Project1VO">
+		SELECT 
+		T.PROJECT_ID AS "projectId",
+		T.PROJECT_NUMBER AS "projectCode",
+		T.PROJECT_NAME AS "projectName",
+		T.STATUS AS "status",
+		T.START_DATE AS "projectStarTime",
+		T.END_DATE AS "projectEndTime"
+		FROM  EPROCPUB.ODS_CM_DELIVERY_PROJECTS_T T
+		WHERE ROWNUM <![CDATA[<]]> 11
+     	AND T.PROJECT_NUMBER like '%' || #{project1VO.projectCode, jdbcType=VARCHAR} || '%'
+	</select>
+	
+	<select id="queryProjectListByCode" resultType="com.huawei.it.purpr.test.vo.Project1VO">
+		SELECT 
+		T.PROJECT_ID AS "projectId",
+		T.PROJECT_NUMBER AS "projectCode",
+		T.PROJECT_NAME AS "projectName",
+		T.STATUS AS "status",
+		T.START_DATE AS "projectStarTime",
+		T.END_DATE AS "projectEndTime"
+		FROM  EPROCPUB.ODS_CM_DELIVERY_PROJECTS_T T
+		WHERE ROWNUM <![CDATA[<]]> 11
+     	AND T.PROJECT_NUMBER like '%' || #{project1VO.projectCode, jdbcType=VARCHAR} || '%'
+	</select>
+	
+	<select id="getProjectById" resultType="com.huawei.it.purpr.test.vo.Project1VO">
+	    SELECT T.PROJECT_ID     AS "projectId",
+	           T.PROJECT_NUMBER AS "projectCode",
+	           T.PROJECT_NAME   AS "projectName",
+	           T.STATUS         AS "status",
+	           T.START_DATE     AS "projectStarTime",
+	           T.END_DATE       AS "projectEndTime"
+	      FROM EPROCPUB.ODS_CM_DELIVERY_PROJECTS_T T
+	     WHERE T.PROJECT_ID = #{projectId,jdbcType=NUMERIC}
+	</select>
+</mapper>
+
+
+
+
+1.	subproject1访问接口
+package com.huawei.it.purpr.test.service;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+@Path("/subproject1")
+@Produces("text/html")
+public interface ISubproject1Service {
+	@GET
+	@Path("/showSubproject1ByProjectCode")
+	String showSubproject1ByProjectCode(@QueryParam("projectCode") String projectCode);
+
+	
+	@GET
+	@Path("/showSubproject1ByProjectId")
+	String showSubproject1ByProjectId(@QueryParam("projectId") Long projectId,
+			                          @QueryParam("projectCode") String projectCode,
+			                          @QueryParam("subprojectCode") String subprojectCode,
+			                          @PathParam("pageSize") Long pageSize,
+			                          @PathParam("currPage") Long currPage);
+	
+	
+}
+
+2.	subproject1访问实现
+package com.huawei.it.purpr.test.service.impl;
+
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import com.huawei.it.purpr.test.service.ICellSubproject11Service;
+import com.huawei.it.purpr.test.service.ICellSubproject1Service;
+import com.huawei.it.purpr.test.service.ISubproject1Service;
+import com.huawei.it.purpr.test.vo.Project1VO;
+import com.huawei.it.purpr.test.vo.Subproject1VO;
+import com.huawei.it.purpr.test6.service.impl.Project1View;
+import com.huawei.it.purpr.test6.service.impl.ProjectView;
+import com.huawei.it.purpr.test6.service.impl.Subproject1View;
+import com.huawei.it.purpr.test6.service.impl.SubprojectView;
+
+@Named
+public class Subproject1Service implements ISubproject1Service {
+
+	@Inject
+	private ICellSubproject1Service cellSubproject1Service;
+	
+	@Override
+	public String showSubproject1ByProjectCode(String projectCode) {
+		Subproject1VO subproject1VO = new Subproject1VO();
+		subproject1VO.getProject().setProjectCode(projectCode);
+		List<Subproject1VO> subprojectlist = cellSubproject1Service.querySubprojectListByProjectCode(subproject1VO);
+		return SubprojectView.getHtmlStrBySubprojectList(subprojectlist,subproject1VO);
+	}
+
+	@Override
+	public String showSubproject1ByProjectId(Long projectId,String projectCode,String subprojectCode,Long pageSize,Long currPage ) {
+		Subproject1VO subproject1VO = new Subproject1VO();
+		subproject1VO.getProject().setProjectId(projectId);
+		subproject1VO.getProject().setProjectCode(projectCode);	
+		subproject1VO.setSubprojectCode(subprojectCode);
+		subproject1VO.setPageSize(pageSize);
+		subproject1VO.setCurrPage(currPage);
+		List<Subproject1VO>  subprojectlist= cellSubproject1Service.querySubprojectByProjectId(subproject1VO);
+		
+		String sub = Subproject1View.getHtmlStrBySubprojectList(subprojectlist,subproject1VO);
+		return sub;
+		
+	}
+}
+3.	subproject1业务层
+4.	package com.huawei.it.purpr.test.service;
+5.	
+6.	import java.util.List;
+7.	import com.huawei.it.purpr.test.vo.Subproject1VO;
+8.	
+9.	public interface ICellSubproject1Service {
+10.		List<Subproject1VO> querySubprojectListByProjectCode(Subproject1VO subproject1VO);
+11.		List<Subproject1VO> querySubprojectByProjectId(Subproject1VO subproject1VO);
+12.		Long getPageSizeBySubproject(Subproject1VO subproject1VO);
+13.	
+14.	
+15.	}
+
+Subproject业务实现
+package com.huawei.it.purpr.test.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import com.huawei.it.purpr.test.dao.ICellSubproject1Dao;
+import com.huawei.it.purpr.test.service.ICellSubproject1Service;
+import com.huawei.it.purpr.test.vo.Subproject1VO;
+
+@Named
+public class CellSubproject1Service implements ICellSubproject1Service {
+
+	@Inject
+	private ICellSubproject1Dao iCellSubproject1Dao;
+
+	@Override
+	public List<Subproject1VO> querySubprojectListByProjectCode(Subproject1VO subproject1VO) {
+		return iCellSubproject1Dao.querySubprojectListByProjectCode(subproject1VO);
+	}
+
+	@Override
+	public List<Subproject1VO> querySubprojectByProjectId(Subproject1VO subproject1VO) {
+		List<Subproject1VO> subproject1List = new ArrayList<Subproject1VO>();
+		subproject1List = iCellSubproject1Dao.getSubprojectByProjectId(subproject1VO);
+		return subproject1List;
+	}
+
+	@Override
+	public Long getPageSizeBySubproject(Subproject1VO subproject1VO) {
+		Long subproject1;
+		subproject1=iCellSubproject1Dao.getPageSizeBySubproject(subproject1VO);
+		return subproject1;
+	}
+}
+
+
+Dao层接口
+package com.huawei.it.purpr.test.dao;
+
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
+import com.huawei.it.purpr.test.vo.Subproject1VO;
+
+public interface ICellSubproject1Dao {
+	List<Subproject1VO> querySubprojectListByProjectCode(@Param("subproject1VO") Subproject1VO subproject1VO);
+	List<Subproject1VO> getSubprojectByProjectId(@Param("subproject1VO") Subproject1VO subproject1vo);
+	Long getPageSizeBySubproject(Subproject1VO subproject1vo);
+	
+	
+}
+
+Dao层Xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+                   
+<mapper namespace="com.huawei.it.purpr.test.dao.ICellSubproject1Dao">
+
+	<!--获取项目信息，包括配置-->
+	<select id="querySubprojectListByProjectCode" resultType="com.huawei.it.purpr.test.vo.Subproject1VO">
+	    select A.PROJECT_NUMBER     AS "project.projectCode",
+	           B.SUB_PROJECT_NUMBER AS "subprojectCode",
+	           B.SUB_PROJECT_NAME   AS "subprojectName",
+	           B.STATUS             AS "subprojectStatus",
+	           B.START_DATE         AS "subprojectStarTime",
+	           B.END_DATE           AS "subprojectEndTime"
+	      FROM EPROCPUB.ODS_CM_DELIVERY_PROJECTS_T   A,
+	           EPROCPUB.ODS_CM_PROJECT_RELATIONS_T   AB,
+	           EPROCPUB.ODS_PI_ODS_SUB_PROJECTS_VI_T B
+	     WHERE AB.PROJECT_NUMBER = A.PROJECT_NUMBER
+			AND AB.SUB_PROJECT_NUMBER =B.SUB_PROJECT_NUMBER
+	   		AND A.PROJECT_NUMBER like '%' || #{subproject1VO.project.projectCode,jdbcType=VARCHAR} || '%'
+	   		AND ROWNUM <![CDATA[<]]> 11
+	</select>
+
+	<select id="getSubprojectByProjectId" resultType="com.huawei.it.purpr.test.vo.Subproject1VO">
+	    select A.PROJECT_ID         AS "projectId",
+	           A.PROJECT_NUMBER     AS "project.projectCode",
+	           B.SUB_PROJECT_NUMBER AS "subprojectCode",
+	           B.SUB_PROJECT_NAME   AS "subprojectName",
+	           B.STATUS             AS "subprojectStatus",
+	           B.START_DATE         AS "subprojectStarTime",
+	           B.END_DATE           AS "subprojectEndTime"
+	      FROM EPROCPUB.ODS_CM_DELIVERY_PROJECTS_T   A,
+	           EPROCPUB.ODS_CM_PROJECT_RELATIONS_T   AB,
+	           EPROCPUB.ODS_PI_ODS_SUB_PROJECTS_VI_T B
+	     WHERE AB.PROJECT_ID = A.PROJECT_ID
+	       AND AB.SUB_PROJECT_ID = B.SUB_PROJECT_ID
+	       AND A.PROJECT_ID =#{subproject1VO.project.projectId,jdbcType=NUMERIC}
+	       AND  B.SUB_PROJECT_NUMBER like '%' || #{subproject1VO.subprojectCode,jdbcType=VARCHAR} || '%'
+	   	   AND ROWNUM <![CDATA[<]]> 11
+	</select>
+
+ 	<select id="getPageSizeBySubproject" resultType="com.huawei.it.purpr.test.vo.Subproject1VO">
+	    select COUNT(*) AS "pageSize"
+	      FROM EPROCPUB.ODS_CM_DELIVERY_PROJECTS_T   A,
+	           EPROCPUB.ODS_CM_PROJECT_RELATIONS_T   AB, 
+	           EPROCPUB.ODS_PI_ODS_SUB_PROJECTS_VI_T B
+	     WHERE AB.PROJECT_ID = A.PROJECT_ID
+	       AND AB.SUB_PROJECT_ID = B.SUB_PROJECT_ID
+	       AND A.PROJECT_ID =#{subproject1VO.project.projectId,jdbcType=NUMERIC}
+	       AND  B.SUB_PROJECT_NUMBER like '%' || #{subproject1VO.subprojectCode,jdbcType=VARCHAR} || '%'
+	   	   AND ROWNUM <![CDATA[<]]> 11
+	</select>
+</mapper>
+    
+
+
+
