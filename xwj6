@@ -1,0 +1,357 @@
+package com.huawei.it.purpr.test6.service.impl;
+
+import java.util.List;
+
+import com.huawei.it.purpr.test.vo.Project1VO;
+
+public class ProjectPagingQueryView {
+	
+		public static String getHtmlStrByprojectPagingQueryList(List<Project1VO> projectPagingQuerylist,Project1VO project1VO) {
+			// 创建StringBuffer对象
+			StringBuffer sb = new StringBuffer();
+			sb.append("<html>").append("\n");
+			sb.append("<head>").append("\n");
+			sb.append("<title>查询项目</title>").append("\n");
+			sb.append("<style>").append("\n");
+			sb.append(".cont{font-weight:bolder;font-size:30px;font-family:'黑体';margin:0px;}").append("\n");
+			sb.append(".top{font-weight:bold;font-size:25px;font-family:'仿宋';}").append("\n");
+			sb.append(".bottom{font-weight:bolder;font-size:14px; margin:5px 0px;padding=0;}").append("\n");
+			sb.append("</style>").append("\n");
+			//使用javascript
+			sb.append("<script language='javascript'>").append("\n");
+			//定义提交currPage函数
+			sb.append("var submit=function(curPage)  { ").append("\n");
+			//如果不是当前页，当前页=1
+			sb.append("if(!curPage){").append("\n");
+			sb.append("curPage = 1;").append("\n");
+			sb.append("}").append("\n");
+			//定义地址Url
+			sb.append("var url = 'http://localhost.huawei.com:60010/pr/services/api/testService/project1/showProject1ByPagingQuery';").append("\n");
+			//通过ID获取参数pageSize
+			sb.append("var pageSize = document.getElementById('pageSizeSel').value").append("\n");
+			//url中添加参数
+			sb.append("url = url + '/' + pageSize + '/' + curPage;").append("\n");
+			//通过Id获取form表单
+			sb.append("var frm = document.getElementById('projectFrm');").append("\n");
+			//为form表单添加url
+			sb.append("frm.action = url;").append("\n");
+			//提交form表单
+			sb.append("frm.submit();").append("\n");
+			sb.append("}").append("\n");
+			sb.append("</script>").append("\n");
+			sb.append("</head>").append("\n");
+			sb.append("<body>").append("\n");
+			sb.append("<div id='search' class='top'>").append("\n");
+			//定义form表单
+			sb.append("<form method='get' action='' id='projectFrm'>").append("\n");
+			String sgg1=project1VO.getProjectCode();
+			if(sgg1 != null){
+				sgg1=project1VO.getProjectCode();
+			}else{
+				sgg1="";
+			}
+			sb.append("项目编码:").append("<input type='text' placeholder='请输入项目编码' name='projectCode' value='" + sgg1 + "' />").append("\n");
+			sb.append("<input type='button' value='查询' onclick='submit(1) />").append("\n");
+			String sgg2=project1VO.getProjectName();
+			if(sgg2 != null){
+				sgg2=project1VO.getProjectName();
+			}else{
+				sgg2="";
+			}
+			sb.append("项目名称:").append("<input type='text' placeholder='请输入项目名称' name='projectName' value='" + sgg2 + "' />").append("\n");
+			sb.append("<input type='button' value='查询' onclick='submit(1)' />").append("\n");
+			String sgg3;
+			if(project1VO.getProjectId() != null){
+				sgg3=project1VO.getProjectId() + "";
+			}else{
+				sgg3="";
+			}
+			sb.append("项目Id:").append("<input type='text' placeholder='请输入项目Id' name='projectId' value='" + sgg3 + "' />").append("\n");
+			sb.append("<input type='button' value='查询' onclick='submit(1)' />").append("\n");
+			sb.append("</form>").append("\n");
+			sb.append("</div>").append("\n");
+			//制作表格
+			sb.append("<div id='result' class='bottom'>").append("\n");
+			sb.append("<table border='1' style='border-spacing:0px'>").append("\n");
+			sb.append("<tr style='background-color:DDDDDD'>").append("\n"); // 仿宋 / 黑色 / 加粗 = th标签样式
+			sb.append("<th align='center' style='border-top:0px; border-left:0px;'>编号</th>").append("\n");
+			sb.append("<th style='border-top:0px; border-left:0px;'>项目编号</th>").append("\n");
+			sb.append("<th style='border-top:0px; border-left:0px;'>项目名称</th>").append("\n");
+			sb.append("<th style='border-top:0px; border-left:0px;'>项目状态</th>").append("\n");
+			sb.append("<th style='border-top:0px; border-left:0px;'>开始时间</th>").append("\n");
+			sb.append("<th style='border-top:0px; border-left:0px; border-right:0px;'>结束时间</th>").append("\n");
+			sb.append("</tr>").append("\n");
+			sb.append("</div>").append("\n");
+			int startIndex = project1VO.getPageSize() * (project1VO.getCurPage()- 1);
+			if (projectPagingQuerylist.size()>0){
+				for (int i = 0; i < projectPagingQuerylist.size(); i++) {
+					Project1VO pp = projectPagingQuerylist.get(i);
+					// 最后一行移除底线
+					String borderBotton = "";
+					if (i == projectPagingQuerylist.size() - 1) {
+						borderBotton = "border-bottom:0px;";
+					}
+					String background = "";
+					// 偶数行颜色为red
+					if (i%2==0) {
+						background  = "background-color:99CCFF;";
+					}
+					String backcolor = "";
+					//奇数行颜色为green
+					if (i%2==1) {
+					    backcolor  = "background-color:DDDDDD;";
+								}
+					sb.append("<tr style='" + background + "" + backcolor + "'>").append("\n");
+					sb.append("<td align='center' style='" + borderBotton + "border-top:0px; border-left:0px;'>" + (startIndex + i + 1) + "</td>").append("\n");
+					sb.append("<td style='" + borderBotton + "border-top:0px; border-left:0px;'><a href='http://localhost.huawei.com:60010/pr/services/api/testService/subproject1/showSubproject1ByPagingQuery/10/1?projectId="+pp.getProjectId()+"&projectCode="+pp.getProjectCode()+"'  target=\"_blank\">" + pp.getProjectCode() + "</a></td>").append("\n");
+					// 项目名称
+					String project1VOName =pp.getProjectName();
+				    if (project1VOName.length()> 41) {
+				    	project1VOName  = project1VOName .substring(0, 40) + "...";
+					}
+					sb.append("<td style='" + borderBotton + "border-top:0px; border-left:0px;'><span title='" + pp.getProjectName() + "'>" + project1VOName  + "</span></td>").append("\n");
+					// This Project Code isxxxxxx
+					sb.append("<td style='" + borderBotton + "border-top:0px; border-left:0px;'>"+pp.getStatus()+"</td>").append("\n");
+					// This Project id is xxxxxx
+					sb.append("<td style='" + borderBotton + "border-top:0px; border-left:0px;'>"+pp.getProjectStarTime()+"</td>").append("\n");
+					sb.append("<td style='" + borderBotton + "border-top:0px; border-left:0px; border-right:0px;'> " +pp.getProjectEndTime() + "</td>").append("\n");
+					sb.append("</tr>").append("\n");
+				}
+			}else{
+				sb.append("<tr style=' background-color:99CCFF'>").append("\n");
+				sb.append("<td colspan='6' align=center>集合为空</td>").append("\n");
+				sb.append("</tr>").append("\n");
+			}
+			sb.append("</table>").append("\n");
+			
+			//总数据量
+			sb.append("总数据量:"+project1VO.getCount()+"").append("&nbsp&nbsp&nbsp&nbsp&nbsp").append("当前第:"+project1VO.getCurPage()+"页").append("\n");
+			// 设计分页
+			int lastpage;
+			if(project1VO.getCount()%project1VO.getPageSize()==0){
+				lastpage=project1VO.getCount()/project1VO.getPageSize();
+			}else{
+				lastpage=project1VO.getCount()/project1VO.getPageSize()+1;
+			}
+			String a="&nbsp&nbsp&nbsp&nbsp&nbsp";
+			sb.append(a).append("<a href='#' onclick='submit(1)'>第一页</a>").append("\n");
+			if(project1VO.getCurPage()==1){
+				sb.append(a).append("上一页").append("\n");	
+			}else{
+				sb.append(a).append("<a href='#' onclick='submit(" + (project1VO.getCurPage() - 1) + ")'>上一页</a>").append("\n");
+			}
+			if(project1VO.getCurPage()==lastpage){
+				sb.append(a).append("下一页").append("\n");			}
+			else{
+				sb.append(a).append("<a href='#' onclick='submit(" + (project1VO.getCurPage() + 1) + ")' >下一页</a>").append("\n");
+		         }
+			sb.append(a).append("<a href='#'  onclick='submit(" +lastpage + ")'>最后一页</a>").append("\n");
+			//页面个数
+			sb.append(a).append("页面显示数量:").append("\n");
+			sb.append("<select name='pageSize' id='pageSizeSel' onchange='submit(1)'>").append("\n");
+			int[] pageSizes = {10,20,30,40,50};
+			for (int i = 0; i < pageSizes.length; i++) {
+				String selectStr = "";
+				if(project1VO.getPageSize()==pageSizes[i]){
+					selectStr = " selected='selected'";
+				}
+				sb.append("<option value='"+pageSizes[i]+"'").append(selectStr).append(">"+pageSizes[i]+"</option>").append("\n");
+			}
+			sb.append("<input type='text' id='curPageIpt' name='curPage' value='"+project1VO.getCurPage()+"' />").append("\n");
+			sb.append("<input type='button' value='跳转'  onclick='submit(document.getElementById(\"curPageIpt\").value)' />").append("\n");
+			sb.append("</body>").append("\n");
+			sb.append("</html>").append("\n");
+			return sb.toString();
+		}
+	}
+
+
+package com.huawei.it.purpr.test6.service.impl;
+
+import java.util.List;
+
+import com.huawei.it.purpr.test.vo.Subproject1VO;
+
+public class SubprojectPagingQueryView {
+	
+	public static String getHtmlStrBySubprojectList(List<Subproject1VO> subprojectlist,Subproject1VO  subproject1VO,int subprojectCount) {
+			// 实例化StringBuffer对象
+			StringBuffer sb = new StringBuffer();
+		
+			sb.append("<html>").append("\n");
+			sb.append("<head>").append("\n");
+			sb.append("<title>查询子项目</title>").append("\n");
+			sb.append("<style>").append("\n");
+			sb.append(".cont{font-weight:bolder;font-size:30px;font-family:'黑体';margin:0px;}").append("\n");
+			sb.append(".top{font-weight:bold;font-size:25px;font-family:'仿宋';}").append("\n");
+			sb.append(".bottom{font-weight:bolder;font-size:14px; margin:5px 0px;padding=0;}").append("\n");
+			sb.append("</style>").append("\n");
+			//1.创建javascript
+			sb.append("<script language=javascript>").append("\n");
+			//2.将currPag函数放入submit对象中
+			sb.append("var submit=function(curPage)  {").append("\n");
+			//3.判断currpage是否为空，为空的情况显示第一页
+			sb.append("if(!curPage){").append("\n");
+			sb.append("curPage=1;").append("\n");
+			sb.append("}").append("\n");
+			//4.定义URL
+			sb.append("var url='http://localhost.huawei.com:60010/pr/services/api/testService/subproject1/showSubproject1ByPagingQuery';").append("\n");
+			//5.url中添加pageSize
+			sb.append("var pageSize = document.getElementById('pageSizeSel').value").append("\n");
+			//6.url中添加
+			sb.append("url=url+'/'+pageSize+'/'+curPage;").append("\n");
+			//通过Id获取form表单
+			sb.append("var frm = document.getElementById('subprojectFrm');").append("\n");
+			//为form表单添加url
+			sb.append("frm.action = url;").append("\n");
+			//提交form表单
+			sb.append("frm.submit();").append("\n");
+			sb.append("}").append("\n");
+			sb.append("</script>").append("\n");
+			sb.append("</head>").append("\n");
+			sb.append("<body>").append("\n");
+			sb.append("<div id='title' clss='cont'>").append("\n");
+			sb.append("<hr height=25px color='EEEEEE'>").append("\n");
+			sb.append("</div>").append("\n");
+			sb.append("<div id='search' class='top'>").append("\n");
+			sb.append("<form method='get' action='' id='subprojectFrm'>").append("\n");
+			sb.append("项目编码:" + subproject1VO.getProject().getProjectCode() +"").append("<br>").append("\n");				
+			sb.append("<input type='hidden' name='projectId' value='" + subproject1VO.getProject().getProjectId()+ "' />").append("\n");
+			sb.append("<input type='hidden' name='projectCode' value='" + subproject1VO.getProject().getProjectCode() + "' />").append("\n");
+			String sgg=subproject1VO.getSubprojectCode();
+			if(sgg != null){
+				sgg=subproject1VO.getSubprojectCode();
+			}else{
+				sgg="";
+			}
+			sb.append("子项目编码:").append("<input type='text' placeholder='请输入子项目编码' name='subprojectCode' value='" +sgg+ "' />").append("\n");
+			sb.append("<input type='button' value='查询' onclick='submit(1)' />").append("\n");
+			String sgg2=subproject1VO.getSubprojectName();
+			if(sgg2 != null){
+				sgg2=subproject1VO.getSubprojectName();
+			}else{
+				sgg2="";
+			}
+			sb.append("子项目名称:").append("<input type='text' placeholder='请输入子项目名称' name='subprojectName' value='" + sgg2 + "' />").append("\n");
+			sb.append("<input type='button' value='查询' onclick='submit(1)' />").append("\n");
+			if(subproject1VO.getSubprojectId() != null){
+				sb.append("子项目Id:").append("<input type='text' placeholder='请输入子项目Id' name='subprojectId' value='" + subproject1VO.getSubprojectId() + "' />").append("\n");
+				sb.append("<input type='button' value='查询' onclick='submit(1)' />").append("\n");
+			}else{
+				sb.append("子项目Id:").append("<input type='text' placeholder='请输入子项目Id' name='subprojectId' value='" +""+ "' />").append("\n");
+				sb.append("<input type='button' value='查询' onclick='submit(1)' />").append("\n");
+			}
+			sb.append("</form>").append("\n");
+			sb.append("</div>").append("\n");
+			sb.append("<div id='result' class='bottom'>").append("\n");
+			sb.append("<table border='1' style='border-spacing:0px'>").append("\n");
+			sb.append("<tr style='background-color:DDDDDD'>").append("\n");
+			sb.append("<th align='center' style='border-top:0px; border-left:0px;'>序号</th>").append("\n");
+			sb.append("<th style='border-top:0px; border-left:0px;'>子项目编号</th>").append("\n");
+			sb.append("<th style='border-top:0px; border-left:0px;'>子项目名称</th>").append("\n");
+			sb.append("<th style='border-top:0px; border-left:0px;'>子项目状态</th>").append("\n");
+			sb.append("<th style='border-top:0px; border-left:0px;'>子项目开启时间</th>").append("\n");
+			sb.append("<th style='border-top:0px; border-left:0px; border-right:0px;'>子项目结束时间</th>").append("\n");
+			sb.append("</tr>").append("\n");
+			sb.append("</div>").append("\n");
+			int startIndex = subproject1VO.getPageSize() * (subproject1VO.getCurPage()- 1);
+			if (subprojectlist.size() > 0) {
+				for (int i = 0; i < subprojectlist.size(); i++) {
+					Subproject1VO ss = subprojectlist.get(i);
+
+					// 最后一行移除底线
+					String borderBotton = "";
+					if (i == subprojectlist.size() - 1) {
+						borderBotton = "border-bottom:0px;";
+					}
+					String background = "";
+					// 偶数行颜色为red
+					if (i % 2 == 0) {
+						background = "background-color:99CCFF;";
+					}
+					String backcolor = "";
+					// 奇数行颜色为green
+					if (i % 2 == 1) {
+						backcolor = "background-color:DDDDDD;";
+					}
+					sb.append("<tr style='" + background + "" + backcolor + "'>").append("\n");
+					sb.append("<td align='center' style='" + borderBotton + "border-top:0px; border-left:0px;'>" +(startIndex + i + 1)+ "</td>").append("\n");
+					sb.append("<td style='" + borderBotton + "border-top:0px; border-left:0px;'>" + ss.getSubprojectCode()
+							+ "</td>").append("\n");
+					String subprojectName = ss.getSubprojectName();
+					if (subprojectName.length() > 41) {
+						subprojectName = subprojectName.substring(0, 40) + "...";
+					}
+					sb.append("<td style='" + borderBotton + "border-top:0px; border-left:0px;'><span title='"
+							+ ss.getSubprojectName() + "'>" + subprojectName + "</span></td>").append("\n");
+					sb.append("<td style='" + borderBotton + "border-top:0px; border-left:0px;'>" + ss.getSubprojectStatus()
+							+ "</td>").append("\n");
+					sb.append("<td style='" + borderBotton + "border-top:0px; border-left:0px;'>"
+							+ ss.getSubprojectStarTime() + " </td>").append("\n");
+					sb.append("<td style='" + borderBotton + "border-top:0px; border-left:0px; border-right:0px;'> "
+							+ ss.getSubprojectEndTime() + "</td>").append("\n");
+					sb.append("</tr>").append("\n");
+				}
+			} else {
+					sb.append("<tr style=' background-color:99CCFF'>").append("\n");
+					sb.append("<td colspan='7' align=center>集合为空</td>").append("\n");
+					sb.append("</tr>").append("\n");
+			}
+			sb.append("</table>").append("\n");
+			
+			//设计分页
+			//总数据量
+			sb.append("总数据量:"+subproject1VO.getCount()+"").append("&nbsp&nbsp&nbsp&nbsp&nbsp").append("当前第:"+subproject1VO.getCurPage()+"页").append("\n");
+			//
+			int lastpage;
+			if(subproject1VO.getCount()%subproject1VO.getPageSize()==0){
+				lastpage=subproject1VO.getCount()/subproject1VO.getPageSize();
+			}else{
+				lastpage=subproject1VO.getCount()/subproject1VO.getPageSize()+1;
+			}
+			//定义第一页
+			String a="&nbsp&nbsp&nbsp&nbsp&nbsp";
+			sb.append(a).append("<a href='#' onclick='submit(1)' > 第一页 </a>").append("\n");
+			//定义上一页
+			if(subproject1VO.getCurPage()==1){
+			sb.append(a).append("上一页").append("\n");
+			}else{
+			sb.append(a).append("<a href='#' onclick='submit(" + (subproject1VO.getCurPage() - 1) + ")'>上一页</a>").append("\n");	
+			}
+			//定义下一页
+			if(subproject1VO.getCurPage()==lastpage){
+			sb.append(a).append("下一页").append("\n");
+			}else{
+			sb.append(a).append("<a href='#' onclick='submit(" + (subproject1VO.getCurPage() + 1) + ")'>下一页</a>").append("\n");	
+			}
+			//定义最后一页
+			sb.append(a).append("<a href='#'  onclick='submit(" +lastpage + ")'>最后一页</a>").append("\n");
+			//定义页面显示数量
+			sb.append(a).append("页面显示数量:").append("\n");
+			sb.append("<select name='pageSize' id='pageSizeSel' onchange='submit(1)'>").append("\n");
+			int[] pageSizes = {10,20,30,40,50};
+			for (int i = 0; i < pageSizes.length; i++) {
+				String selectStr = "";
+				if(subproject1VO.getPageSize()==pageSizes[i]){
+					selectStr = " selected='selected'";
+				}
+				sb.append("<option value='"+pageSizes[i]+"'").append(selectStr).append(">"+pageSizes[i]+"</option>").append("\n");
+			}
+			// 隐藏当前页与页面输数据量pagesize[1]
+			sb.append("<input type='text' id='curPageIpt' name='curPage' value='"+subproject1VO.getCurPage()+"' />").append("\n");
+			sb.append("<input type='button' value='跳转'  onclick='submit(document.getElementById(\"curPageIpt\").value)' />").append("\n");
+			sb.append("</body>").append("\n");
+			sb.append("</html>").append("\n");
+			return sb.toString();
+
+		}
+	}
+
+
+
+
+
+
+
+
+
