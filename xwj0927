@@ -1,0 +1,1265 @@
+1.HeadersVO对象
+public class HeadersVO extends BaseVO {
+	private LineVO lineVO = new LineVO();
+	private String formCode;
+	private String projectCode;
+	private String subprojectCode;
+	private Date  formCreationTime;
+	private Date toCreationTime;
+	private Long creatorId;
+	private String contractCode;
+	private Long headId;
+	public String getFormCode() {
+		return formCode;
+	}
+	public void setFormCode(String formCode) {
+		this.formCode = formCode;
+	}
+	public String getProjectCode() {
+		return projectCode;
+	}
+	public void setProjectCode(String projectCode) {
+		this.projectCode = projectCode;
+	}
+	public String getSubprojectCode() {
+		return subprojectCode;
+	}
+	public void setSubprojectCode(String subprojectCode) {
+		this.subprojectCode = subprojectCode;
+	}
+
+	public Long getCreatorId() {
+		return creatorId;
+	}
+	public void setCreatorId(Long creatorId) {
+		this.creatorId = creatorId;
+	}
+	public String getContractCode() {
+		return contractCode;
+	}
+	public void setContractCode(String contractCode) {
+		this.contractCode = contractCode;
+	}
+	public Date getFormCreationTime() {
+		return formCreationTime;
+	}
+	public void setFormCreationTime(Date formCreationTime) {
+		this.formCreationTime = formCreationTime;
+	}
+	public Date getToCreationTime() {
+		return toCreationTime;
+	}
+	public void setToCreationTime(Date toCreationTime) {
+		this.toCreationTime = toCreationTime;
+	}
+	public Long getHeadId() {
+		return headId;
+	}
+	public void setHeadId(Long headId) {
+		this.headId = headId;
+	}
+	public LineVO getLineVO() {
+		return lineVO;
+	}
+	public void setLineVO(LineVO lineVO) {
+		this.lineVO = lineVO;
+	}
+
+
+}
+2.LineVO对象
+package com.huawei.it.purpr.form.vo;
+
+import java.util.Date;
+
+public class LineVO {
+	private String lineCode;
+	private String itemDescription;
+	private Long categoryId;
+	private String uomCode;
+	private int quantity;
+	private Date startDate;
+	private Date endDate;
+	private Long headId;
+	private String duName;
+	private String categoryName;
+	
+	public String getLineCode() {
+		return lineCode;
+	}
+	public void setLineCode(String lineCode) {
+		this.lineCode = lineCode;
+	}
+	public String getItemDescription() {
+		return itemDescription;
+	}
+	public void setItemDescription(String itemDescription) {
+		this.itemDescription = itemDescription;
+	}
+	public Long getCategoryId() {
+		return categoryId;
+	}
+	public void setCategoryId(Long categoryId) {
+		this.categoryId = categoryId;
+	}
+	public String getUomCode() {
+		return uomCode;
+	}
+	public void setUomCode(String uomCode) {
+		this.uomCode = uomCode;
+	}
+	public int getQuantity() {
+		return quantity;
+	}
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+	public Long getHeadId() {
+		return headId;
+	}
+	public void setHeadId(Long headId) {
+		this.headId = headId;
+	}
+	public Date getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+	public Date getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+	public String getDuName() {
+		return duName;
+	}
+	public void setDuName(String duName) {
+		this.duName = duName;
+	}
+	public String getCategoryName() {
+		return categoryName;
+	}
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+	
+}
+
+3.访问接口
+ackage com.huawei.it.purpr.form;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+
+@Path("/headers")
+@Produces("text/html")
+public interface IHeadersService {
+	@GET
+	@Path("/showForm/{pageSize}/{curPage}")
+	String showForm(@QueryParam("projectCode") String projectCode,
+					@QueryParam("formCode") String formCode,
+					@QueryParam("formCreationTime") String formCreationTime,
+					@QueryParam("toCreationTime")  String toCreationTime,					
+					@PathParam("pageSize") int pageSize,
+					@PathParam("curPage") int curPage,
+					@QueryParam("headId")  Long headId);
+	
+	@GET
+	@Path("/showFormDetail")
+	String showFormDetail(@QueryParam("formCode") String formCode,
+						  @QueryParam("headId")  Long headId,
+						  @QueryParam("categoryId")  Long categoryId);
+	
+}
+
+
+
+4.访问层实现
+package com.huawei.it.purpr.form.service.impl;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Named;
+import com.huawei.it.purpr.form.IHeadersService;
+import com.huawei.it.purpr.form.service.ICellHeadersService;
+import com.huawei.it.purpr.form.vo.HeadersVO;
+import com.huawei.it.purpr.form.vo.LineVO;
+
+@Named
+public class HeadersService implements IHeadersService {
+	@Inject 
+	ICellHeadersService cellHeadersService;
+	
+	@Override
+	public String showForm(String projectCode,String formCode,String formCreationTime,String toCreationTime, int pageSize, int curPage,Long headId) {
+		HeadersVO headersVO = new HeadersVO();
+		headersVO.setProjectCode(projectCode);
+		headersVO.setFormCode(formCode); 
+		headersVO.setHeadId(headId);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			headersVO.setFormCreationTime(sdf.parse(formCreationTime));
+		} catch (ParseException e) {
+			System.out.println("开始时间起点格式不正确，开始时间起点为：" + formCreationTime);
+		} catch (NullPointerException e) {
+			
+		}
+		
+		try {
+			headersVO.setToCreationTime(sdf.parse(toCreationTime));
+		} catch (ParseException e) {
+			System.out.println("开始时间终点格式不正确，开始时间终点为：" + toCreationTime);
+		} catch (NullPointerException e) {
+			
+		}
+		headersVO.setCurPage(curPage);
+		headersVO.setPageSize(pageSize);
+		List<HeadersVO> showHeadersList=cellHeadersService.queryshowForm(headersVO);
+		int count=cellHeadersService.getCount(headersVO);
+		headersVO.setCount(count);
+		return HeadersView.getHtmlStrByShowFrom(showHeadersList, headersVO);
+	}
+
+	@Override
+	public String showFormDetail(String formCode,Long headId,Long categoryId) {
+		HeadersVO headersVO = new HeadersVO();
+		headersVO.setFormCode(formCode);
+		List<HeadersVO> showFormDetailList=cellHeadersService.queryshowFormDetail(headersVO);
+		LineVO lineVO=new LineVO();
+		lineVO.setHeadId(headId);
+		List<LineVO> showLineFormDetailList=cellHeadersService.queryshowLineFormDetail(lineVO);
+		String categoryName=cellHeadersService.getCategoryName(lineVO);
+		lineVO.setCategoryName(categoryName);
+		lineVO.setCategoryId(categoryId);
+		return FormDetailView.getHtmlStrByShowFromDetail(showFormDetailList, headersVO,lineVO,showLineFormDetailList);
+	}
+
+
+
+}
+
+
+5.业务层接口
+package com.huawei.it.purpr.form.service;
+
+import java.util.List;
+
+import com.huawei.it.purpr.form.vo.HeadersVO;
+import com.huawei.it.purpr.form.vo.LineVO;
+
+public interface ICellHeadersService {
+
+	List<HeadersVO> queryshowForm(HeadersVO headersVO);
+
+	int getCount(HeadersVO headersVO);
+
+	List<HeadersVO> queryshowFormDetail(HeadersVO headersVO);
+	
+	List<LineVO> queryshowLineFormDetail(LineVO lineVO);
+	
+	String getCategoryName(LineVO lineVO);
+	
+}
+
+6.业务层实现
+package com.huawei.it.purpr.form.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Named;
+import com.huawei.it.jalor5.core.log.ILogger;
+import com.huawei.it.jalor5.core.log.JalorLoggerFactory;
+import com.huawei.it.purpr.form.dao.ICellHeadersDao;
+import com.huawei.it.purpr.form.service.ICellHeadersService;
+import com.huawei.it.purpr.form.vo.HeadersVO;
+import com.huawei.it.purpr.form.vo.LineVO;
+import com.huawei.it.purpr.test.service.impl.CellProject1Service;
+
+@Named
+public class CellHeadersService implements ICellHeadersService{
+	private static final ILogger logger1 = JalorLoggerFactory.getLogger(CellProject1Service.class);
+	@Inject
+	private ICellHeadersDao iCellHeadersDao;
+	
+	@Override
+	public List<HeadersVO> queryshowForm(HeadersVO headersVO) {
+		List<HeadersVO> queryshowFormList=new ArrayList<HeadersVO>();
+		queryshowFormList=iCellHeadersDao.queryShowFrom(headersVO);
+		return queryshowFormList;
+	}
+
+	@Override
+	public int getCount(HeadersVO headersVO) {
+		int count;
+		count=iCellHeadersDao.getCount(headersVO);
+		return count;
+	}
+
+	@Override
+	public List<HeadersVO> queryshowFormDetail(HeadersVO headersVO) {
+		List<HeadersVO> queryshowFormDetailList=new ArrayList<HeadersVO>();
+		queryshowFormDetailList=iCellHeadersDao.queryshowFormDetail(headersVO);
+		return queryshowFormDetailList;
+	}
+
+	@Override
+	public List<LineVO> queryshowLineFormDetail(LineVO lineVO) {
+		List<LineVO> queryshowLineFormDetailList=new ArrayList<LineVO>();
+		queryshowLineFormDetailList=iCellHeadersDao.queryshowLineFormDetail(lineVO);
+		return queryshowLineFormDetailList;
+	}
+
+	@Override
+	public String getCategoryName(LineVO lineVO) {
+		String categoryName;
+		categoryName=iCellHeadersDao.getCategoryName(lineVO);
+		return categoryName;
+	}
+
+}
+7.dao接口
+package com.huawei.it.purpr.form.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.huawei.it.purpr.form.vo.HeadersVO;
+import com.huawei.it.purpr.form.vo.LineVO;
+
+
+public interface ICellHeadersDao {
+	
+	List<HeadersVO> queryShowFrom(@Param("headersVO")HeadersVO headersVO);
+	int getCount(@Param("headersVO") HeadersVO headersVO);
+	List<HeadersVO> queryshowFormDetail(@Param("headersVO")HeadersVO headersVO);
+	List<LineVO> queryshowLineFormDetail(@Param("lineVO")LineVO lineVO);
+	String getCategoryName(@Param("lineVO")LineVO lineVO);
+}
+8.dao.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.huawei.it.purpr.form.dao.ICellHeadersDao">
+	
+	<select id="queryShowFrom" resultType="com.huawei.it.purpr.form.vo.HeadersVO">
+		SELECT *
+		FROM   (SELECT A.SEGMENT1 AS "formCode",
+       		   		   A.PROJECT_NUM AS "projectCode",
+              		   A.SUB_PROJECT_NUM AS "subprojectCode",
+              		   A.CREATION_DATE AS "formCreationTime",
+                       A.CREATED_BY AS "creatorId",
+                       A.CONTRACT_NO AS "contractCode",
+        			   A.REQUISITION_HEADER_ID AS "headId",
+        			   ROWNUM AS RN
+        		FROM PUR_PR.PR_HEADERS_ALL_T A
+       			WHERE 1=1
+				AND A.REQUISITION_TYPE_CODE = 'ENG'
+				<if test="headersVO.projectCode !=null and '' !=headersVO.projectCode"> 
+       			AND A.PROJECT_NUM like '%' || #{headersVO.projectCode, jdbcType=VARCHAR} || '%'
+				</if>
+				
+		       	<if test="headersVO.formCreationTime !=null and '' !=headersVO.formCreationTime">
+				AND A.CREATION_DATE >= #{headersVO.formCreationTime,jdbcType=DATE}
+				</if>
+				<if test="headersVO.toCreationTime !=null and '' !=headersVO.toCreationTime">
+				AND A.CREATION_DATE <![CDATA[<]]> #{headersVO.toCreationTime,jdbcType=DATE}+1			
+				</if>
+	            )TEMP
+	    WHERE TEMP.RN <![CDATA[<=]]> #{headersVO.curPage,jdbcType=NUMERIC}*#{headersVO.pageSize,jdbcType=NUMERIC}
+  		AND   TEMP.RN >=1+(#{headersVO.curPage,jdbcType=NUMERIC}-1)*#{headersVO.pageSize,jdbcType=NUMERIC}
+	
+	</select>
+	
+ 	<select id="getCount" resultType="int">
+	   	SELECT COUNT(*)
+		  FROM PUR_PR.PR_HEADERS_ALL_T A
+          WHERE 1=1
+          <if test="headersVO.projectCode !=null and '' !=headersVO.toCreationTime">
+          AND A.PROJECT_NUM like '%' || #{headersVO.projectCode,jdbcType=VARCHAR} || '%'
+          </if>
+          <if test="headersVO.formCreationTime !=null and '' !=headersVO.formCreationTime">
+		  AND A.CREATION_DATE >= #{headersVO.formCreationTime,jdbcType=DATE}
+		  </if>
+		  <if test="headersVO.toCreationTime !=null and '' !=headersVO.toCreationTime">
+		  AND A.CREATION_DATE <![CDATA[<]]> #{headersVO.toCreationTime,jdbcType=DATE}+1			
+		  </if>
+    </select>
+  
+    <select id="queryshowFormDetail" resultType="com.huawei.it.purpr.form.vo.HeadersVO">
+		  		SELECT A.PROJECT_NUM AS "projectCode",
+              		   A.SUB_PROJECT_NUM AS "subprojectCode",
+              		   A.CREATION_DATE AS "formCreationTime",
+                       A.CREATED_BY AS "creatorId",
+                       A.CONTRACT_NO AS "contractCode",
+                       A.*
+                FROM   PUR_PR.PR_HEADERS_ALL_T A
+       			WHERE   A.SEGMENT1=#{headersVO.formCode,jdbcType=VARCHAR} 
+	
+	</select>
+	
+	 <select id="queryshowLineFormDetail" resultType="com.huawei.it.purpr.form.vo.LineVO">
+		  		SELECT B.LINE_NUM AS "lineCode",
+      				   B.ITEM_DESCRIPTION AS "itemDescription",
+       				   B.CATEGORY_ID AS "categoryId",
+                       B.UOM AS "uomCode",
+       				   B.QUANTITY AS "quantity",
+                       B.START_DATE AS "startDate",
+                       B.END_DATE AS "endDate",
+                       B.DU_NAME AS "duName",
+                       B.*
+ 			    FROM   PUR_PR.PR_LINES_ALL_T B,
+ 			    	   PUR_PR.PR_HEADERS_ALL_T A
+ 			    WHERE  B.REQUISITION_HEADER_ID=A.REQUISITION_HEADER_ID
+ 			    AND    A.REQUISITION_HEADER_ID=#{lineVO.headId,jdbcType=NUMERIC} 
+  	
+	</select>
+	
+	<select id="getCategoryName" resultType="com.huawei.it.purpr.form.vo.LineVO">
+		  		SELECT C.CATEGORY_NAME AS "categoryName"
+                FROM   IBUY.MTL_CATEGORIES_B_MV C,
+                	   PUR_PR.PR_LINES_ALL_T B
+ 			    WHERE  C.CATEGORY_ID =B.CATEGORY_ID
+ 			    AND    C.INSTANCE_ID =B.INSTANCE_ID  
+ 			    AND    B.CATEGORY_ID=#{lineVO.categoryId,jdbcType=NUMERIC} 
+ 			   
+	</select>
+
+</mapper>
+  
+
+
+
+扩展pr行.
+SELECT PRHA.REQUISITION_HEADER_ID AS "prHeadId",
+               PRHA.SEGMENT1              AS "prNo",
+               PRHA.INTERFACE_SOURCE_CODE AS "interfaceSourceCode",
+               PRHA.PURCHASE_TYPE         AS "purchaseType",
+               PRLA.REQUISITION_LINE_ID   AS "prLineId",
+               PRLA.LINE_STATUS           AS "lineStatus",
+               PRLA.IDENTIFICATION        AS "identification",
+               PRLA.UNIPORTAL        	  AS "uniportal",
+               PRLA.ERP_PR_NUM AS "erpPrNum",
+               PRLA.INTENDED_USE AS "intendedUse",
+               PRLA.PO_AUTO_APPROVE_FLAG AS "poAutoApproveFlag",
+               PRLA.ERP_PR_LINE_NUM AS "erpPrLineNum",
+               PRLA.ERP_PR_LINE_ID AS "erpPrLineId",
+		<!-- PRLA.ERP_PO_NUM AS "erpPoNum", -->
+               (SELECT NVL2(PRA.PO_RELEASE_ID,
+		                    PRLA.ERP_PO_NUM || '-' || PRA.RELEASE_NUM,
+		                    PRLA.ERP_PO_NUM)
+		          FROM PO_LINE_LOCATIONS_ALL PLLA, PO_RELEASES_ALL PRA
+		         WHERE PLLA.PO_RELEASE_ID = PRA.PO_RELEASE_ID(+)
+		           AND PLLA.INSTANCE_ID = PRA.INSTANCE_ID(+)
+		           AND PLLA.LINE_LOCATION_ID = PRLA.ERP_PO_LINE_LOCATION_ID
+		           AND PLLA.INSTANCE_ID = PRLA.INSTANCE_ID
+		           AND ROWNUM = 1) AS "erpPoNum",
+		       (SELECT NVL2(PRA.PO_RELEASE_ID,
+		                    PRA.AUTHORIZATION_STATUS,
+		                    PHA.AUTHORIZATION_STATUS)
+			          FROM PO_LINE_LOCATIONS_ALL PLLA,
+			               PO_RELEASES_ALL       PRA,
+			               IBUY.PO_HEADERS_ALL   PHA
+			         WHERE PLLA.PO_RELEASE_ID = PRA.PO_RELEASE_ID(+)
+			           AND PLLA.INSTANCE_ID = PRA.INSTANCE_ID(+)
+			           AND PLLA.LINE_LOCATION_ID = PRLA.ERP_PO_LINE_LOCATION_ID
+			           AND PLLA.INSTANCE_ID = PRLA.INSTANCE_ID
+			           AND PLLA.PO_HEADER_ID = PHA.PO_HEADER_ID
+			           AND PLLA.INSTANCE_ID = PHA.INSTANCE_ID
+			           AND ROWNUM = 1) AS "poStatus",
+               PRLA.ERP_PO_LINE_NUM AS "erpPoLineNum",
+               PRLA.ERP_PO_LINE_LOCATION_ID AS "erpPoLineLocationId",
+               PRLA.ERP_PR_CREATION_DATE AS "erpPrCreationDate",
+               PRLA.ERP_PO_CREATION_DATE AS "erpPoCreationDate",
+               PRLA.ERP_IFC_ERR_MSG AS "erpIfcErrMsg",
+               PRLA.LINE_NUM AS "lineNum",
+               PRLA.GOODS_FLAG AS "goodsFlag",
+               PRLA.GOODS_DESCRIPTION AS "goodsDescription",
+               PRLA.CATEGORY_ID AS "categoryId",
+               PRLA.ITEM_DESCRIPTION AS "itemDescription",
+               PRLA.UOM AS "uom",
+               PRLA.HSN_SAC AS "hsnSac",
+               PRLA.UNIT_PRICE AS "unitPrice",
+               (SELECT NVL(MAX(POL.UNIT_PRICE),
+                    NVL(PRLA.FICTITIOUS_UNIT_PRICE, PRLA.UNIT_PRICE))
+	            FROM IBUY.PO_LINES_ALL POL
+	            WHERE PRLA.BLANKET_PO_HEADER_ID = POL.PO_HEADER_ID
+	            AND PRLA.BLANKET_PO_LINE_NUM = POL.LINE_NUM
+	            AND PRLA.INSTANCE_ID = POL.INSTANCE_ID) AS "bpaUnitPrice",
+	          (SELECT NVL(MAX(PHA.CURRENCY_CODE), PRLA.CURRENCY_CODE)
+	           FROM IBUY.PO_HEADERS_ALL PHA
+	           WHERE PRLA.BLANKET_PO_HEADER_ID = PHA.PO_HEADER_ID
+	            AND PRLA.INSTANCE_ID = PHA.INSTANCE_ID) AS "bpaCurrencyCode",
+               PRLA.QUANTITY AS "quantity",
+               PRLA.AMOUNT AS "amount",
+               PRLA.DELIVER_TO_LOCATION_ID AS "locationId",
+               (SELECT HLA.LOCATION_CODE
+                  FROM HR_LOCATIONS_ALL HLA
+                 WHERE HLA.LOCATION_ID = PRLA.DELIVER_TO_LOCATION_ID
+                   AND HLA.INSTANCE_ID = PRLA.INSTANCE_ID
+                   AND ROWNUM = 1) AS "locationCode",
+               (SELECT HLA.ADDRESS_LINE_1
+                  FROM HR_LOCATIONS_ALL HLA
+                 WHERE HLA.LOCATION_ID = PRLA.DELIVER_TO_LOCATION_ID
+                   AND HLA.INSTANCE_ID = PRLA.INSTANCE_ID
+                   AND ROWNUM = 1) AS "locationName",
+               DECODE(PRLA.DELIVER_TO_LOCATION_ID,
+               NULL,
+               '',
+               (SELECT MAX(HLA.LOC_INFORMATION16)
+                  FROM HR_LOCATIONS_ALL HLA
+                 WHERE HLA.LOCATION_ID = PRLA.DELIVER_TO_LOCATION_ID
+                   AND HLA.INSTANCE_ID = PRLA.INSTANCE_ID)) AS "deliverToState",  
+                   
+		       (SELECT HLA.TOWN_OR_CITY
+		          FROM HR_LOCATIONS_ALL HLA
+		         WHERE HLA.LOCATION_ID = PRLA.DELIVER_TO_LOCATION_ID
+		           AND HLA.INSTANCE_ID = PRLA.INSTANCE_ID
+		           AND ROWNUM = 1) AS "townOrCity",
+                    
+               PRLA.REQUESTOR_ID AS "requestor.userId",
+               (SELECT TUT.LNAME
+                  FROM TPL_USER_T TUT
+                 WHERE TUT.USER_ID = PRLA.REQUESTOR_ID
+                   AND ROWNUM = 1) AS "requestor.userCN",
+               PRLA.LAST_UPDATE_DATE AS "lastUpdateDate",
+               PRLA.LAST_UPDATED_BY AS "lastUpdatedBy",
+               PRLA.CREATION_DATE AS "creationDate",
+               PRLA.CREATED_BY AS "createdBy",
+               
+               PRLA.ITEM_ID AS "itemId",
+               
+               NVL((SELECT MSIB.SEGMENT1
+		              FROM MTL_SYSTEM_ITEMS_B MSIB
+		             WHERE MSIB.INVENTORY_ITEM_ID = PRLA.ITEM_ID
+		               AND MSIB.INSTANCE_ID = PRLA.INSTANCE_ID
+		               AND MSIB.ORG_ID = PRLA.ORG_ID
+		               AND MSIB.ORGANIZATION_ID = PRLA.DESTINATION_ORGANIZATION_ID
+		               AND ROWNUM = 1),
+		           PRLA.ITEM_NUMBER) as "itemCode",
+					   
+               PRLA.END_DATE AS "endDate",
+               PRLA.REMARK AS "remark",
+               PRLA.NOTE_TO_BUYER AS "noteToBuyer",
+               PRLA.NOTE_TO_RECEIVER AS "noteToReceiver",
+               PRLA.BLANKET_PO_HEADER_ID AS "blanketPoHeaderId",
+               PRLA.BLANKET_PO_LINE_NUM AS "blanketPoLineNum",
+               PRLA.CURRENCY_CODE AS "currencyCode",
+               PRLA.RATE_TYPE AS "rateType",
+               PRLA.RATE_DATE AS "rateDate",
+               PRLA.RATE AS "rate",
+               PRLA.INTENDED_USE AS "purpose",
+               PRLA.SUGGESTED_VENDOR_NAME       AS "suggestedVendorName",
+               PRLA.CANCEL_FLAG AS "cancelFlag",
+               PRLA.DESTINATION_TYPE_CODE AS "destinationTypeCode",
+               PRLA.DESTINATION_ORGANIZATION_ID AS "destinationOrganizationId",
+               PRLA.CLOSED_CODE AS "closedCode",
+               PRLA.RETURN_NOTE AS "returnNote",
+               PRLA.VENDOR_ID AS "vendorId",
+               (SELECT PV.SEGMENT1
+                  FROM PO_VENDORS PV
+                 WHERE PV.VENDOR_ID = PRLA.VENDOR_ID
+                   AND PV.INSTANCE_ID = PRLA.INSTANCE_ID
+                   AND ROWNUM = 1) AS "vendorCode",
+               (SELECT PV.VENDOR_NAME
+                  FROM PO_VENDORS PV
+                 WHERE PV.VENDOR_ID = PRLA.VENDOR_ID
+                   AND PV.INSTANCE_ID = PRLA.INSTANCE_ID
+                   AND ROWNUM = 1) AS "vendorName",
+               (SELECT NVL(PV.ONE_TIME_FLAG,'N')
+                  FROM PO_VENDORS PV
+                 WHERE PV.VENDOR_ID = PRLA.VENDOR_ID
+                   AND PV.INSTANCE_ID = PRLA.INSTANCE_ID
+                   AND ROWNUM = 1) AS "vendorOneTimeFlag",
+               PRLA.VENDOR_SITE_ID AS "vendorSiteId",
+               (SELECT PVSA.VENDOR_SITE_CODE
+                  FROM PO_VENDOR_SITES_ALL PVSA
+                 WHERE PVSA.VENDOR_SITE_ID = PRLA.VENDOR_SITE_ID
+                   AND PVSA.INSTANCE_ID = PRLA.INSTANCE_ID
+                   AND ROWNUM = 1) AS "vendorSiteCode",
+               (SELECT PVSA.address_line1
+                  FROM PO_VENDOR_SITES_ALL PVSA
+                 WHERE PVSA.VENDOR_SITE_ID = PRLA.VENDOR_SITE_ID
+                   AND PVSA.INSTANCE_ID = PRLA.INSTANCE_ID
+                   AND ROWNUM = 1) AS "vendorSiteName",
+               PRLA.ACTUAL_SITE AS "actualSite",
+               PRLA.START_DATE AS "startDate",
+               NVL(DECODE(PRLA.TAX_RATE, '0', NULL, (PRLA.TAX_RATE || '% ')),
+		           (SELECT ATCA.TAX_RATE || '% ' || ATCA.NAME
+		              FROM IBUY.AP_TAX_CODES_ALL ATCA
+		             WHERE ATCA.TAX_ID = PRLA.TAX_ID
+		               AND PRLA.TAX_ID IS NOT NULL
+		               AND ROWNUM = 1)) AS "taxRateShow",
+               PRLA.TAX_NAME AS "taxName",
+               PRLA.TAX_USE AS "taxUse",
+               PRLA.tax_rate AS "taxRate",
+               (SELECT HLA.LOC_INFORMATION16 FROM HR_LOCATIONS_ALL HLA WHERE HLA.LOCATION_ID = PRLA.deliver_to_location_id AND ROWNUM = 1) AS "deliverTo",
+               PRLA.SOURCE_SYSTEM_APP_ID AS "sourceSystemAppId",
+               PRLA.PROJECT_NUM AS "projectCode",
+               (SELECT OCDP.PROJECT_ID
+                  FROM ODS_CM_DELIVERY_PROJECTS_T OCDP
+                 WHERE OCDP.PROJECT_NUMBER = PRLA.PROJECT_NUM
+                   AND OCDP.INSTANCE_ID = PRLA.INSTANCE_ID
+                   AND ROWNUM = 1) AS "projectId",
+               (SELECT OCDP.PROJECT_NAME
+                  FROM ODS_CM_DELIVERY_PROJECTS_T OCDP
+                 WHERE OCDP.PROJECT_NUMBER = PRLA.PROJECT_NUM
+                   AND OCDP.INSTANCE_ID = PRLA.INSTANCE_ID
+                   AND ROWNUM = 1) AS "projectName",
+               PRLA.CONTRACT_NUM AS "contractNo",
+               PRLA.SOURCE_REQ_LINE_ID AS "sourceReqLineId",
+               NVL((SELECT PREC.LEAD_TIME
+					  FROM PR_EC_VOUCHER_T PREC
+					 WHERE PREC.EC_CODE = 'MSM'
+					   AND PREC.VOUCHER_ID = PRLA.SOURCE_REQ_LINE_ID
+					   AND ROWNUM =1),0) AS "leadTime",
+               /*PRLA.ORG_ID AS "orgId",*/
+               PRHA.ORG_ID AS "orgId",
+               PRLA.TAX_ID AS "taxId",
+               PRLA.NOTE_TO_VENDOR AS "noteToVendor",
+               /*PRLA.COMPANY_CODE AS "companyCode",*/
+               (SELECT SCC.CC_CODE
+			          FROM SSE_CONFIG_COMPANY       SCC,
+	                     FND_INSTANCE_CONFIG      FIC,
+	                     AP_SYSTEM_PARAMETERS_ALL ASPA,
+	                     PER_ALL_PEOPLE_F         PAPF,
+	                     FND_ORG                  FO
+	               WHERE ASPA.ORG_ID = FIC.OU_ORG_ID
+	                 AND FIC.COMPANY_CODE = SCC.CC_CODE
+	                 AND FO.ORG_ID = ASPA.ORG_ID
+	                 AND FO.INSTANCE_ID = ASPA.INSTANCE_ID
+	                 AND FIC.INSTANCE_ID = ASPA.INSTANCE_ID
+	                 AND PAPF.INSTANCE_ID = ASPA.INSTANCE_ID
+	                 AND ASPA.ORG_ID =  PRHA.ORG_ID
+	                 AND ASPA.INSTANCE_ID = PRHA.INSTANCE_ID
+	                 AND SCC.CC_STATUS = '0'
+		           AND ROWNUM =1) AS "companyCode",	
+               PRLA.DEPARTMENT_CODE AS "departmentCode",
+               (SELECT FLV.DESCRIPTION
+				  FROM FND_FLEX_VALUES FLV
+				 WHERE FLV.INSTANCE_ID = PRLA.INSTANCE_ID
+				   AND FLV.FLEX_VALUE = PRLA.DEPARTMENT_CODE
+				   AND EXISTS (SELECT 1
+				          FROM IBUY_FLEX_VALUE_SET_V IFVSV
+				         WHERE IFVSV.FLEX_SET_TYPE = 'DEPT_VALUE_SET_ID'
+				           AND IFVSV.INSTANCE_ID = FLV.INSTANCE_ID
+				           AND IFVSV.FLEX_SET_VALUE = FLV.FLEX_VALUE_SET_ID)
+				   AND ROWNUM = 1) AS "departmentName",
+               PRLA.ACCOUNT_CODE AS "account",
+               PRLA.BIDDING_AREA AS "biddingArea",
+               PRLA.PRODUCT_CODE AS "physicsProductCode",
+               (SELECT FFV.DESCRIPTION
+					          FROM FND_FLEX_VALUES FFV, IBUY_FLEX_VALUE_SET_V IFVSV
+					         WHERE FFV.FLEX_VALUE_SET_ID = IFVSV.FLEX_SET_VALUE
+					           AND FFV.INSTANCE_ID = IFVSV.INSTANCE_ID
+					           AND IFVSV.FLEX_SET_TYPE = 'PRODUCT_VALUE_SET_ID'
+					           AND FFV.FLEX_VALUE = PRLA.PRODUCT_CODE
+					           AND FFV.INSTANCE_ID = PRLA.INSTANCE_ID
+					           AND ROWNUM = 1) AS "physicsProductName",
+               PRLA.BU_CODE AS "buCode",
+               NVL(PRHA.REGION_CODE,PRLA.REGION_CODE) AS "regionCode",
+               PRLA.IC_CODE AS "icCode",
+               PRLA.FILE_GROUP_ID AS "fileGroupId",
+               PRLA.TASK_ID AS "taskId",
+               PRLA.TASK_CODE AS "taskCode",
+               NVL(PRLA.SUB_PROJECT_ID,PRLA.ODS_SUB_PROJECT_ID) AS "subProjectId",
+               PRLA.SUB_PROJECT_NUMBER AS "subProjectCode",
+               PRLA.OFFERING_ID AS "offeringId",
+               PRLA.SERVICE_PRODUCT_CODE AS "serviceProductCode",
+               (SELECT OBPOT.NAME
+					          FROM ODS_BAS_PRODUCT_OFFERINGS_T OBPOT
+					         WHERE OBPOT.NO = PRLA.SERVICE_PRODUCT_CODE
+					           AND ROWNUM=1) as "serviceProductName",
+               PRLA.RECEIVER_ID AS "receiver.userId",
+               DECODE(PRLA.FIRST_TYPE,
+                  'person',
+                  (SELECT TUT.LNAME
+                  FROM TPL_USER_T TUT
+                 WHERE TUT.USER_ID = PRLA.RECEIVER_ID
+                   AND ROWNUM = 1),
+                  'group',
+                  (SELECT SBV.ATTRIBUTE1
+                     FROM SET_BASEDATA_VALUE SBV
+                    WHERE SBV.SET_TYPE = 'person'
+                      AND SBV.INSTANCE_ID = PRLA.INSTANCE_ID
+                      AND SBV.BASEDATA_VALUE_SET_ID = PRLA.RECEIVER_ID
+                      AND ROWNUM = 1)
+                      ,(SELECT TUT.LNAME
+                  FROM TPL_USER_T TUT
+                 WHERE TUT.USER_ID = PRLA.RECEIVER_ID
+                   AND ROWNUM = 1)
+                      ) AS "receiver.userCN",
+               PRLA.ACCEPTOR_ID AS "acceptor.userId",
+                DECODE(PRLA.SECOND_TYPE,
+                  'person',
+                  (SELECT TUT.LNAME
+                  FROM TPL_USER_T TUT
+                 WHERE TUT.USER_ID = PRLA.ACCEPTOR_ID
+                   AND ROWNUM = 1),
+                  'group',
+                  (SELECT SBV.ATTRIBUTE1
+                     FROM SET_BASEDATA_VALUE SBV
+                    WHERE SBV.SET_TYPE = 'person'
+                      AND SBV.INSTANCE_ID = PRLA.INSTANCE_ID
+                      AND SBV.BASEDATA_VALUE_SET_ID = PRLA.ACCEPTOR_ID
+                      AND ROWNUM = 1)
+                      ,(SELECT TUT.LNAME
+                  FROM TPL_USER_T TUT
+                 WHERE TUT.USER_ID = PRLA.ACCEPTOR_ID
+                   AND ROWNUM = 1)
+                      ) AS "acceptor.userCN",   
+               PRLA.EXPENDITURE_TYPE AS "expenditureType",
+               PRLA.EXPENDITURE_ORGANIZATION_ID AS "expenditureOrganizationId",
+               PRLA.EXPENDITURE_ITEM_DATE AS "expenditureItemDate",
+               PRLA.ACCEPT_FLAG AS "acceptFlag",
+               PRLA.PROJECT_ACCOUNTING_CONTEXT AS "projectAccounting_context",
+		<!--PRLA.ODS_SUB_PROJECT_ID AS "odsSubProjectId",-->
+               PRLA.INSTANCE_ID AS "instanceId",
+               PRLA.CREATE_PO_FLAG AS "createPoFlag",
+               PRLA.INDUSTRY_APPROVER_ID AS "industryApprover.userId",
+               (SELECT TUT.LNAME
+                  FROM TPL_USER_T TUT
+                 WHERE TUT.USER_ID = PRLA.INDUSTRY_APPROVER_ID
+                   AND ROWNUM = 1) AS "industryApprover.userCN",
+               PRLA.FIRST_TYPE AS "firstType",
+               PRLA.SECOND_TYPE AS "secondType",
+               PRLA.CHANGE_STATUS AS "changeStatus",
+               PRLA.RECEIVE_TYPE AS "receiveType",
+               PRLA.RETURN_EMPLOYEE_ID AS "returnPerson.userId",
+               (SELECT TUT.LNAME
+                  FROM TPL_USER_T TUT
+                 WHERE TUT.USER_ID = PRLA.RETURN_EMPLOYEE_ID
+                   AND ROWNUM = 1) AS "returnPerson.userCN",
+               PRLA.STD_ITEM_ID AS "stdItemId",
+               PRLA.PRODUCT3_ID AS "product3Id",
+               PRLA.LEVEL1_AREA AS "level1Area",
+               PRLA.LEVEL2_FAMILY AS "level2Family",
+               PRLA.LEVEL3_PRODUCT AS "level3Product",
+               NVL(PRLA.CATEGORY_NAME,
+	                  (SELECT MCB.SEGMENT1 || '.' || MCB.SEGMENT2 || '.' || MCB.SEGMENT3
+					  FROM MTL_CATEGORIES_B MCB
+					 WHERE MCB.CATEGORY_ID = PRLA.CATEGORY_ID
+					   AND MCB.INSTANCE_ID = PRLA.INSTANCE_ID)
+					   ) AS "categoryName",
+               PRLA.PR_POOL_ID AS "ppId",
+               PRLA.WBS_ID AS "wbsId",
+               PRLA.DU_ID AS "duId",
+               PRLA.DU_NO AS "duCode",
+               PRLA.DU_NAME AS "duName",
+               PRLA.PARENT_ID AS "parentId",
+               PRLA.HEADER_VER_ID AS "headerVerId",
+               PRLA.PROMISED_DATE AS "promisedDate",
+               PRLA.PP_BUFFER_TYPE AS "ppBufferType",
+               PRLA.TAX_TYPE AS "taxType",
+               PRLA.TAX_PRODUCT AS "taxProduct",
+               PRLA.INTE_VERSION_FLAG AS "inteVersionFlag",
+               PRLA.FICTITIOUS_UNIT_PRICE AS "fictitiousUnitPrice",
+               PRLA.ASSET_NUM AS "assetNum",
+               PRLA.ASSET_PLAN_NUM AS "assetPlanNum",
+               PRLA.EXPENSE_TYPE AS "expenseType",
+               PRLA.ACCOUNT_FLAG AS "accountFlag",
+               PRLA.DIVIDE_FLAG AS "divideFlag",
+               PRLA.IMPORT_TYPE AS "importType",
+               PRLA.BENEFIT_START_DATE AS "benefitStartDate",
+               PRLA.BENEFIT_END_DATE AS "benefitEndDate",
+               PRLA.PMA_FLOW_FLAG AS "pmaFlowFlag",
+               PRLA.PR_FINISHI_TYPE AS "prFinishiType",
+               PRLA.PW_FLOW_FLAG AS "pwFlowFlag",
+               PRLA.REQUESTOR_INFORMATION AS "requestorInformation",
+               PRLA.SOURCE_SYSTEM_URL AS "sourceSystemUrl",
+               PRLA.RFQ_STATUS AS "rfqStatus",
+               PRLA.EC_PO_NO AS "ecPoNo",
+               PRLA.EC_SUB_PO_NO AS "ecSubPoNo",
+               PRLA.EC_SUB_PO_FLAG AS "ecSubPoFlag",
+               PRLA.SKU_NO AS "skuNo",
+               PRLA.EC_CODE AS "ecCode",
+               PRLA.EC_PO_STATUS AS "ecPoStatus",
+               PRLA.EC_PO_VALID_STATUS AS "ecPoValidStatus",
+               PRLA.EC_PO_DELIVE_STATUS AS "ecPoDeliveStatus",
+               PRLA.EC_LOCATION_FULL_ID AS "ecLocationFullId",
+               PRLA.COLUMN_CODE AS "columnCode",
+		       (SELECT SCV1.COLUMN_NAME ||'('||SCV1.COLUMN_ZH_NAME||')'as columnName           
+                  FROM SET_COLUMN_DISPLAY_VALUE SCV1, MTL_CATEGORIES_B MCB
+                 WHERE SCV1.RELATE_CATEGORY = MCB.CATEGORY_ID(+)
+                   AND MCB.INSTANCE_ID(+) = SCV1.INSTANCE_ID
+                   AND SCV1.INSTANCE_ID =PRLA.INSTANCE_ID
+                   AND SCV1.COLUMN_CODE = PRLA.COLUMN_CODE
+                   AND SCV1.IS_IOI = 'N'
+                   AND ROWNUM = 1) AS "columnName",               
+               PRLA.EC_UPDATE_PRICE_FLAG AS "ecUpdatePriceFlag",
+               PRLA.BEFORE_DEPT_APPROVER AS "beforeDeptApprover.userId",
+               PRLA.AFTER_DEPT_APPROVER AS "afterAeptApprover.userId",
+               PRLA.APPROVER_ID AS "approver.userId",
+               (SELECT TUT.LNAME
+                  FROM TPL_USER_T TUT
+                 WHERE TUT.USER_ID = PRLA.APPROVER_ID
+                   AND ROWNUM = 1) AS "approver.userCN",
+		       CASE
+		         WHEN EXISTS
+		          (SELECT 1 FROM EGO.PR_SD_ITEMS T WHERE T.GROUP_ID = PRLA.ITEM_GROUP_ID) AND
+		              NOT EXISTS (SELECT 1
+		                 FROM EGO.PR_SD_ITEMS T
+		                WHERE T.GROUP_ID = PRLA.ITEM_GROUP_ID
+		                  AND T.CATALOG_ID IS NULL) THEN
+		          1
+		         ELSE
+		          0
+		       END AS "itemGroupId",                                   
+               PRLA.ITEM_NUMBER AS "itemNumber",
+               PRLA.GO_TO_SD_DATE AS "goToSdDate",
+               PRLA.SLA_TYPE AS "slaType",
+               PRLA.SLA_STATUS AS "slaStatus",
+               PRLA.PW_MAIL_FLAG AS "pwMailFlag",
+               PRLA.REC_GROUP_ID AS "recGroupId",
+               PRLA.INVOICE_DATE AS "invoiceDate",
+               PRLA.INVOICE_NUM AS "invoiceNum",
+               PRLA.INVOICE_STATUS AS "invoiceStatus",
+               PRLA.CEG_BUYER AS "cegBuyer.userId",
+               (SELECT TUT.LNAME
+                  FROM TPL_USER_T TUT
+                 WHERE TUT.USER_ID = PRLA.CEG_BUYER
+                   AND ROWNUM = 1) AS "cegBuyer.userCN",
+               PRLA.CEG_LEADER AS "cegLeader.userId",
+               (SELECT TUT.LNAME
+                  FROM TPL_USER_T TUT
+                 WHERE TUT.USER_ID = PRLA.CEG_LEADER
+                   AND ROWNUM = 1) AS "cegLeader.userCN",
+                PRLA.DEPARTMENT_APPROVER_ID AS "departmentApprover.userId",
+		       (SELECT TUT.LNAME
+		          FROM TPL_USER_T TUT
+		         WHERE TUT.USER_ID = PRLA.DEPARTMENT_APPROVER_ID
+		           AND ROWNUM = 1) AS "departmentApprover.userCN",
+		       PRLA.PROJECT_APPROVER_ID AS "projectApprover.userId",
+		       (SELECT TUT.LNAME
+		          FROM TPL_USER_T TUT
+		         WHERE TUT.USER_ID = PRLA.PROJECT_APPROVER_ID
+		           AND ROWNUM = 1) AS "projectApprover.userCN",
+               PRLA.RECEIVING_AMOUNT AS "receivingAmount",
+               PRLA.CHECK_AMOUNT AS "checkAmount",
+               PRLA.AUTO_TAX_ID AS "autoTaxId",
+               PRLA.TAXABLE_AMOUNT AS "taxableAmount",
+               PRLA.VAT_AMOUNT AS "vatAmount",
+               PRLA.NET_AMOUNT AS "netAmount",
+               PRLA.DATA_CHANGE_LOG AS "dataChangeLog",
+               PRLA.DELETE_FLAG AS "deleteFlag",
+               PRLA.LAST_UPDATE_VERSION AS "lastUpdateVersion",
+               (SELECT PHA.SEGMENT1
+		          FROM PO_HEADERS_ALL PHA
+		         WHERE PHA.PO_HEADER_ID = PRLA.BLANKET_PO_HEADER_ID
+		           AND ROWNUM = 1) AS "erpBpaNo",
+		       PRLA.PURCHASE_METHOD AS "purchaseMethod",  
+		       DECODE((SELECT COUNT(*)
+                  FROM SET_SHIP_TO_RECEIVER SSTR, SET_BASEDATA_VALUE SBV
+                 WHERE SSTR.CATEGORY_SET_ID = SBV.BASEDATA_VALUE_SET_ID
+                   AND SBV.INSTANCE_ID = SSTR.INSTANCE_ID
+                   AND SBV.SET_TYPE = 'category' 
+                   AND SSTR.INSTANCE_ID = PRLA.INSTANCE_ID
+                   AND SSTR.REGION_ID = PRHA.REGION_CODE
+                   AND SSTR.BG_ID = PRHA.BG_ID
+                   AND SBV.SEGMENT_VALUE = PRLA.CATEGORY_ID),
+                0,
+                (SELECT NVL(MAX(CAR.SEQ_ID), 0)
+                   FROM CENTRE_ACCEPT_REGION   CAR,
+                        CENTRE_ACCEPT_CATEGORY CAC,
+                        SSE_CONFIG_AREA2       SCA2
+                  WHERE CAR.SEQ_ID = CAC.CENTRE_REGION_SEQ_ID
+                    AND CAR.INSTANCE_ID = PRLA.INSTANCE_ID
+                    AND CAC.CATEGORY_ID = PRLA.CATEGORY_ID
+                    AND CAR.REGION_ID1 = SCA2.CA1_CODE
+                    AND SCA2.CA2_CODE = PRHA.REGION_CODE),
+                0) AS "isCentreShipTo", 
+                PRLA.TELEPHONE AS "telephone",
+                PRLA.RECEIVE_METHOD AS "receiverMethod",
+                PRLA.APPLYNO AS "applyno",
+                (SELECT COUNT(1) 
+                   FROM PR_DISTRIBUTIONS_ALL_T PRDT
+                  WHERE PRLA.REQUISITION_LINE_ID = PRDT.REQUISITION_LINE_ID) AS "feeQty",                    
+               
+         (SELECT MAX(DECODE(ECT.VARIETY,
+                          1,
+                          'Integrated Procurement Dept 1',
+                          3,
+                          'Integrated Procurement Dept 2',
+                          2,
+                          'Administrative Logistics Service',
+                          4,
+                          'Others'))
+                  FROM MTL_CATEGORIES_B MCB, EGO_CATEGORY_TYPE ECT
+                 WHERE MCB.SEGMENT1 = ECT.SEGMENT1
+                   AND MCB.SEGMENT2 = ECT.SEGMENT2
+                   AND MCB.SEGMENT3 = ECT.SEGMENT3
+                   AND MCB.ENABLED_FLAG = 'Y'
+      			   AND MCB.category_id = PRLA.CATEGORY_ID
+         		   AND MCB.instance_id = PRLA.instance_id
+         ) AS "serviceType",
+         
+         (SELECT MAX(ECT.VARIETY)
+                  FROM MTL_CATEGORIES_B MCB, EGO_CATEGORY_TYPE ECT
+                 WHERE MCB.SEGMENT1 = ECT.SEGMENT1
+                   AND MCB.SEGMENT2 = ECT.SEGMENT2
+                   AND MCB.SEGMENT3 = ECT.SEGMENT3
+                   AND MCB.ENABLED_FLAG = 'Y'
+      			   AND MCB.category_id = PRLA.CATEGORY_ID
+         		   AND MCB.instance_id = PRLA.instance_id
+         ) AS variety,
+         
+           NVL((SELECT PLLA.QUANTITY_ACCEPTED
+				  FROM PO_LINE_LOCATIONS_ALL PLLA
+				 WHERE PLLA.LINE_LOCATION_ID = PRLA.ERP_PO_LINE_LOCATION_ID
+				 AND PLLA.INSTANCE_ID = PRLA.INSTANCE_ID
+				 AND ROWNUM = 1),0) "quantityAccepted",
+		   NVL((SELECT PLLA.QUANTITY_BILLED
+				  FROM PO_LINE_LOCATIONS_ALL PLLA
+				 WHERE PLLA.LINE_LOCATION_ID = PRLA.ERP_PO_LINE_LOCATION_ID
+				 AND PLLA.INSTANCE_ID = PRLA.INSTANCE_ID
+				 AND ROWNUM = 1),0) "quantityBilled",
+	       NVL((SELECT  CASE
+				         WHEN PLLA.CANCEL_FLAG = 'Y' AND PLLA.QUANTITY_RECEIVED <![CDATA[ <> ]]> 0 THEN
+				          'CLOSED' 
+				         WHEN PLLA.CANCEL_FLAG = 'Y' AND PLLA.QUANTITY_RECEIVED = 0 THEN
+				          'REJECTED' 
+				         ELSE
+				          PLLA.CLOSED_CODE
+				       END CLOSED_CODE
+				  FROM PO_LINE_LOCATIONS_ALL PLLA
+				 WHERE PLLA.LINE_LOCATION_ID = PRLA.ERP_PO_LINE_LOCATION_ID
+				 AND PLLA.INSTANCE_ID = PRLA.INSTANCE_ID
+				 AND ROWNUM = 1),'') "poClosedCode",
+			DECODE(PRHA.REQUISITION_TYPE_CODE, 'ADMIN', PURPR_COMMON_PKG.IS_INSTRUMENT(PRLA.REQUISITION_LINE_ID)) AS "isInstrument",
+			PRLA.CATALOG_LINE_ID AS "catalogLineId", 
+			
+			(SELECT ECLT.MANUFACTION
+			   FROM PUR_MALL.EGO_CATALOG_LINE_T ECLT
+			  WHERE ECLT.CATALOG_LINE_ID = PRLA.CATALOG_LINE_ID) AS "manufaction",
+			  
+			(SELECT ECLT.SUPPLIER_MATERIALS_CODE
+			   FROM PUR_MALL.EGO_CATALOG_LINE_T ECLT
+			  WHERE ECLT.CATALOG_LINE_ID = PRLA.CATALOG_LINE_ID) AS "supplierModel",
+			
+			PRLA.GSTIN_NO AS "gstinNo",
+			PRLA.GSTIN_STATE AS "gstinState",
+			PRLA.UDF_CODE AS "udfCode",
+			PRLA.BUSINESS_MOTIVATION_L1 AS "businessMotivationL1",
+			PRLA.BUSINESS_MOTIVATION_L2 AS "businessMotivationL2",
+			PRLA.require_clarify_person AS "requireClarifyPerson",
+			PRLA.APPLYNO AS "applyno",
+			PRLA.PROJECT_BACKGROUND_NOTES AS "projectBackgroundNotes",
+			PRHA.BG_ID AS "bgId",
+			PRLA.ECCN AS eccn,
+			
+			PRLA.NO_INVOLVED_FLAG AS "noInvolvedFlag",
+			
+			PRLA.FIELD AS "fieldName",
+			
+	       (SELECT PCET.CODE
+	          FROM PR_CODE_EXTEND_T PCET
+	         WHERE PCET.PR_LINE_ID = PRLA.REQUISITION_LINE_ID
+	           AND PCET.TYPE = '1') AS "esamProductCode",
+	           
+	       (SELECT PCET.CODE
+	          FROM PR_CODE_EXTEND_T PCET
+	         WHERE PCET.PR_LINE_ID = PRLA.REQUISITION_LINE_ID
+	           AND PCET.TYPE = '2') AS "subProductCode",
+	           
+	       (SELECT PCET.CODE
+	          FROM PR_CODE_EXTEND_T PCET
+	         WHERE PCET.PR_LINE_ID = PRLA.REQUISITION_LINE_ID
+	           AND PCET.TYPE = '3') AS "moduleCode",
+	         
+	       CASE 
+	         WHEN (SELECT PCET.NAME
+	                 FROM PR_CODE_EXTEND_T PCET
+	                WHERE PCET.PR_LINE_ID = PRLA.REQUISITION_LINE_ID
+	                  AND PCET.TYPE = '1') IS NULL THEN 
+	                ''
+	         ELSE
+	           RTRIM((SELECT PCET.NAME
+	                    FROM PR_CODE_EXTEND_T PCET
+	                   WHERE PCET.PR_LINE_ID = PRLA.REQUISITION_LINE_ID
+	                     AND PCET.TYPE = '1') || '/' || 
+	                 (SELECT PCET.NAME
+	                    FROM PR_CODE_EXTEND_T PCET
+	                   WHERE PCET.PR_LINE_ID = PRLA.REQUISITION_LINE_ID
+	                     AND PCET.TYPE = '2') || '/' || 
+	                 (SELECT PCET.NAME
+	                    FROM PR_CODE_EXTEND_T PCET
+	                   WHERE PCET.PR_LINE_ID = PRLA.REQUISITION_LINE_ID
+	                     AND PCET.TYPE = '3'),'/')
+	       END AS "esamProductName",
+	           
+			NVL(PRLA.AUTO_TAX_FLAG,'N') AS "autoTaxFlag",  
+			PRLA.TRADE_APPROVER_ID as "tradeApprover.userId",
+               ROW_NUMBER() OVER(ORDER BY PRLA.REQUISITION_LINE_ID) RID,
+               PRLA.category_template_id as templatePrId,
+               decode(PRLA.PURCHASE_METHOD, 'CATALOG', (SELECT CLA.UNIT_PRICE FROM CATALOG_LINES_ALL CLA WHERE CLA.CATALOG_LINE_ID =PRLA.CATALOG_LINE_ID)) AS catalogUnitPrice
+		  FROM PR_LINES_ALL_T PRLA, PR_HEADERS_ALL_T PRHA
+	     WHERE PRLA.REQUISITION_HEADER_ID = PRHA.REQUISITION_HEADER_ID
+	       AND NVL(PRLA.DELETE_FLAG,'N') = 'N'
+
+
+
+
+
+
+
+
+
+
+
+2.pr头 
+SELECT PRHA.REQUISITION_HEADER_ID AS "prHeadId",
+		       PRHA.REQUISITION_TYPE_CODE AS "requestionTypeCode",
+		       PRHA.DIRECT_APPROVER_ID AS "directApprover.userId",
+		       PRHA.BUSINESS_TYPE   AS "businessType",
+		       NVL(PRHA.PREPARER_ID, PRHA.CREATED_BY) AS "preparer.userId",
+		       (SELECT TPT.LNAME
+		          FROM TPL_USER_T TPT
+		         WHERE TPT.USER_ID = NVL(PRHA.PREPARER_ID, PRHA.CREATED_BY)
+		           AND ROWNUM = 1) AS "preparer.userCN",
+		       (SELECT TPT.EMPLOYEE_NUMBER
+		          FROM TPL_USER_T TPT
+		         WHERE TPT.USER_ID = NVL(PRHA.PREPARER_ID, PRHA.CREATED_BY)
+		           AND ROWNUM = 1) AS "preparer.employeeNumber",
+		       PRHA.SEGMENT1 AS "prNo",
+		       PRHA.DESCRIPTION AS "description",
+		       PRHA.AUTHORIZATION_STATUS AS "prStatus",
+		       PRHA.NOTE_TO_AUTHORIZER AS "noteToAuthorizer",
+		       PRHA.SPECIAL_NOTE AS "specialNote",
+		       PRHA.FF_LEADER AS "ffLeader.personId",
+		       (SELECT PAPF.EMPLOYEE_NUMBER
+		          FROM PER_ALL_PEOPLE_F PAPF
+		         WHERE PAPF.PERSON_ID = PRHA.FF_LEADER
+		           AND PAPF.INSTANCE_ID = PRHA.INSTANCE_ID
+		           AND ROWNUM = 1) as "ffLeader.employeeNumber",
+		       (SELECT PAPF.FULL_NAME
+		          FROM PER_ALL_PEOPLE_F PAPF
+		         WHERE PAPF.PERSON_ID = PRHA.FF_LEADER
+		           AND PAPF.INSTANCE_ID = PRHA.INSTANCE_ID
+		           AND ROWNUM = 1) as "ffLeader.userCN",
+		       PRHA.PR_CHANGE_FLAG AS "prChangeFlag",
+		       PRHA.CONTRACT_NO AS "contractNo",
+		       PRHA.ENGINEERING_NUM AS "engineeringNo",
+		       PRHA.ENGINEERING_NAME AS "engineeringName",
+		       PRHA.CENTER_SITE AS "centerSite",
+		       PRHA.PRODUCT_CLASS AS "productClass",
+		       PRHA.INTERFACE_SOURCE_CODE AS "interfaceSourceCode",
+		       PRHA.ORG_ID AS "orgId",
+		       (SELECT MAX(PLA.DESTINATION_ORGANIZATION_ID)
+				  FROM PR_LINES_ALL_T PLA
+				 WHERE PLA.REQUISITION_HEADER_ID = PRHA.REQUISITION_HEADER_ID
+				   AND PLA.INSTANCE_ID = PRHA.INSTANCE_ID) AS "destinationOrganizationId",
+		       (SELECT FIC.COMPANY_CODE
+				  FROM FND_INSTANCE_CONFIG FIC
+				 WHERE FIC.OU_ORG_ID = PRHA.ORG_ID
+				   AND FIC.INSTANCE_ID = PRHA.INSTANCE_ID
+		           AND ROWNUM = 1) AS "companyCode",
+		       (SELECT SCC.CC_NAME
+				  FROM FND_INSTANCE_CONFIG FIC, SSE_CONFIG_COMPANY SCC
+				 WHERE FIC.COMPANY_CODE = SCC.CC_CODE
+				   AND FIC.OU_ORG_ID = PRHA.ORG_ID
+				   AND FIC.INSTANCE_ID = PRHA.INSTANCE_ID
+		           AND ROWNUM = 1) AS "companyName",
+		       PRHA.FILE_GROUP_ID AS "fileGroupId",
+		       PRHA.DEPARTMENT_NUM AS "departmentCode",
+		       (SELECT OCDPT.PROJECT_ID
+		          FROM ODS_CM_DELIVERY_PROJECTS_T OCDPT
+		         WHERE OCDPT.PROJECT_NUMBER = PRHA.PROJECT_NUM
+		           AND ROWNUM = 1) AS "projectId",
+		       PRHA.PROJECT_NUM AS "projectCode",
+		       (SELECT OCDPT.PROJECT_NAME
+		          FROM ODS_CM_DELIVERY_PROJECTS_T OCDPT
+		         WHERE OCDPT.PROJECT_NUMBER = PRHA.PROJECT_NUM
+		           AND ROWNUM = 1) AS "projectName",
+		       PRHA.INSTANCE_ID as "instanceId",
+		       PRHA.PURCHASE_TYPE AS "purchaseType",
+		       PRHA.TOTAL_AMOUNT AS "totalAmount",
+		       PRHA.REMARK AS "remark",
+		       PRHA.SERVICE_PRODUCT_NAME AS "serviceProductName",
+		       PRHA.NOTE_TO_VENDOR AS "noteToVendor",
+		       PRHA.APPROVER_ID AS "approver.userId",
+		       (SELECT TPT.LNAME
+		          FROM TPL_USER_T TPT
+		         WHERE TPT.USER_ID = PRHA.APPROVER_ID
+		           AND ROWNUM = 1) AS "approver.userCN",
+		       NVL(PRHA.REGION_CODE,
+		           (SELECT MAX(PRLA.REGION_CODE)
+		              FROM PR_LINES_ALL_T PRLA
+		             WHERE PRLA.REQUISITION_HEADER_ID = PRHA.REQUISITION_HEADER_ID)) AS "regionCode",
+		       PRHA.SUB_PROJECT_NUM AS "subProjectCode",
+		       PRHA.PROJECT_TOTAL_AMOUNT AS "projectTotalAmount",
+		       PRHA.SUB_PROJECT_TOTAL_AMOUNT AS "subProjectTotalAmount",
+		       PRHA.PFC_APPROVE_FLAG AS "pfcApproveFlag",
+		       PRHA.PFC_APPROVER AS "pfcApprover.userId",
+		       (SELECT TPT.LNAME
+		          FROM TPL_USER_T TPT
+		         WHERE TPT.USER_ID = PRHA.PFC_APPROVER
+		           AND ROWNUM = 1) AS "pfcApprover.userCN",
+		       PRHA.SUPPLIER_SEE_ATTACH_FLAG AS "supplierSeeAttachFlag",
+		       PRHA.TENDER_NAME AS "tenderName",
+		       PRHA.PROCUREMENT_FROM AS "procurementFrom",
+		       PRHA.TENDER_ID AS "tenderId",
+		       PRHA.RFQ_NUMBER AS "rfqNo",
+		       PRHA.REPEAT_REMARK AS "repeatRemark",
+		       PRHA.REPEAT_TYPE AS "repeatType",
+		       PRHA.REPEAT_SCENARIO AS "repeatScenario",
+		       PRHA.REPEAT_REASON AS "repeatReason",
+		       PRHA.ADVANCE_REASON AS "advanceReason",
+		       PRHA.END_DATE_MAIL_FLAG AS "endDateMailFlag",
+		       PRHA.REPEAT_PR_DELETE_REMARK AS "repeatPrDeleteRemark",
+		       PRHA.AMS_FLOW_FLAG AS "amsFlowFlag",
+		       PRHA.TENDER_CHANGE_ID AS "tenderChangeId",
+		       PRHA.PAYMENT_STATUS AS "paymentStatus",
+		       PRHA.FIN_LOCATION_CODE AS "finLocationCode",
+		       PRHA.CREATED_BY AS "createdBy",
+		       PRHA.CREATION_DATE AS "creationDate",
+		       PRHA.LAST_UPDATED_BY AS "lastUpdatedBy",
+		       PRHA.LAST_UPDATE_DATE AS "lastUpdateDate",
+		       PRHA.PLANNER_ID AS "planner.userId",
+		       (SELECT TPT.LNAME
+		          FROM TPL_USER_T TPT
+		         WHERE TPT.USER_ID = PRHA.PLANNER_ID
+		           AND ROWNUM = 1) AS "planner.userCN",
+		       PRHA.SUBMIT_DATE AS "submitDate",
+		       PRHA.FROM_HEADER_ID AS "fromHeaderId",
+		       PRHA.LAST_APPROVE_DATE AS "lastApproveDate",
+		       PRHA.AC_APPROVER_ID AS "acApprover.userId",
+		       (SELECT TPT.LNAME
+		          FROM TPL_USER_T TPT
+		         WHERE TPT.USER_ID = PRHA.AC_APPROVER_ID
+		           AND ROWNUM = 1) AS "acApprover.userCN",
+		       PRHA.BG_ID AS "bgId",
+		       PRHA.BEFORE_DEPT_APPROVER AS "beforeDeptApprover.userId",
+		       PRHA.AFTER_DEPT_APPROVER AS "afterDeptApprover.userId",
+		       PRHA.RCV_MAIL_COUNT AS "rcvMailCount",
+		       PRHA.RCV_MAIL_DATE AS "rcvMailDate",
+		       PRHA.INVOICES_NUMBER AS "invoicesNumber",
+		       PRHA.ACCEPTOR_ID AS "accepter.userId",
+		       (SELECT TPT.LNAME
+		          FROM TPL_USER_T TPT
+		         WHERE TPT.USER_ID = PRHA.ACCEPTOR_ID
+		           AND ROWNUM = 1) AS "accepter.userCN",
+		       PRHA.INVOICE_ARCHIVED_NUMBER AS "invoiceArchivedNumber",
+		       PRHA.PROCESS_FLAG AS "processFlag",
+		       PRHA.ACCOUNTANT_ID AS "accountant.userId",
+		       (SELECT TPT.LNAME
+		          FROM TPL_USER_T TPT
+		         WHERE TPT.USER_ID = PRHA.ACCOUNTANT_ID
+		           AND ROWNUM = 1) AS "accountant.userCN",
+		       PRHA.GL_DATE AS "glDate",
+		       PRHA.ARCHIVE_FLAG AS "archiveFlag",
+		       PRHA.ARCHIVE_HANDLER AS "archiveHandler.userId",
+		       (SELECT TPT.LNAME
+		          FROM TPL_USER_T TPT
+		         WHERE TPT.USER_ID = PRHA.ARCHIVE_HANDLER
+		           AND ROWNUM = 1) AS "archiveHandler.userCN",
+		       PRHA.SOB AS "sob",
+		       PRHA.SOURCE_SYSTEM_APP_ID AS "sourceSystemAppId",
+		       PRHA.SOURCE_SYSTEM_APP_LINK AS "sourceSystemAppLink",
+		       PRHA.SOURCE_SYSTEM_ATTACH_LINK AS "sourceSystemAttachLink",
+		       PRHA.PAYMENT_TERMS AS "paymentTermsId",
+		       PRHA.OVER_QUOTA_APPROVER AS "overQuotaApprover.userId",
+		       (SELECT TPT.LNAME
+		          FROM TPL_USER_T TPT
+		         WHERE TPT.USER_ID = PRHA.OVER_QUOTA_APPROVER
+		           AND ROWNUM = 1) AS "overQuotaApprover.userCN",
+		       PRHA.SPECIAL_APPROVER AS "specialApprover.userId",
+		       (SELECT TPT.LNAME
+		          FROM TPL_USER_T TPT
+		         WHERE TPT.USER_ID = PRHA.SPECIAL_APPROVER
+		           AND ROWNUM = 1) AS "specialApprover.userCN",
+		       PRHA.DATA_CHANGE_LOG AS "dataChangeLog",
+		       PRHA.VENDOR_SITE_ID AS "vendorSiteId",
+		       PRHA.AUDIT_TYPE AS "auditType",
+		       PRHA.APPROVE_LEVEL AS "approveLevel",
+		       (SELECT PVSA.VENDOR_SITE_CODE
+		          FROM PO_VENDOR_SITES_ALL PVSA
+		         WHERE PVSA.VENDOR_SITE_ID = PRHA.VENDOR_SITE_ID
+		           AND PVSA.INSTANCE_ID = PRHA.INSTANCE_ID
+		           AND ROWNUM = 1) AS "vendorSiteCode",
+		       PRHA.VENDOR_ID AS "vendorId",
+		       (SELECT PV.SEGMENT1
+		          FROM PO_VENDORS PV
+		         WHERE PV.VENDOR_ID = PRHA.VENDOR_ID
+		           AND PV.INSTANCE_ID = PRHA.INSTANCE_ID
+		           AND ROWNUM = 1) AS "vendorCode",
+		       (SELECT PV.VENDOR_NAME
+		          FROM PO_VENDORS PV
+		         WHERE PV.VENDOR_ID = PRHA.VENDOR_ID
+		           AND PV.INSTANCE_ID = PRHA.INSTANCE_ID
+		           AND ROWNUM = 1) AS "vendorName",
+		       NVL(PRHA.CURRENCY_CODE,
+		           (SELECT MAX(PRLA.CURRENCY_CODE)
+		              FROM PR_LINES_ALL_T PRLA
+		             WHERE PRLA.REQUISITION_HEADER_ID = PRHA.REQUISITION_HEADER_ID)) AS "currencyCode",
+		       (SELECT PRLA.REQUESTOR_ID
+	              FROM PR_LINES_ALL_T PRLA
+	             WHERE PRLA.REQUISITION_HEADER_ID = PRHA.REQUISITION_HEADER_ID
+	               AND ROWNUM = 1) AS "requestor.userId",
+		       (SELECT TPT.EMPLOYEE_NUMBER
+		          FROM TPL_USER_T TPT, PR_LINES_ALL_T PRLA
+		         WHERE TPT.USER_ID = PRLA.REQUESTOR_ID
+		           AND PRLA.REQUISITION_HEADER_ID = PRHA.REQUISITION_HEADER_ID
+		           AND ROWNUM = 1) AS "requestor.employeeNumber",
+		       (SELECT TPT.LNAME
+		          FROM TPL_USER_T TPT, PR_LINES_ALL_T PRLA
+		         WHERE TPT.USER_ID = PRLA.REQUESTOR_ID
+		           AND PRLA.REQUISITION_HEADER_ID = PRHA.REQUISITION_HEADER_ID
+		           AND ROWNUM = 1) AS "requestor.userCN",
+		       PRHA.BUYER_ID AS "buyer.personId",		       
+		       (SELECT PAPF.EMPLOYEE_NUMBER
+		          FROM PER_ALL_PEOPLE_F PAPF
+		         WHERE PAPF.PERSON_ID = PRHA.BUYER_ID
+		           AND PAPF.INSTANCE_ID = PRHA.INSTANCE_ID
+		           AND ROWNUM = 1)  AS "buyer.employeeNumber",
+		       (SELECT PAPF.FULL_NAME
+		          FROM PER_ALL_PEOPLE_F PAPF
+		         WHERE PAPF.PERSON_ID = PRHA.BUYER_ID
+		           AND PAPF.INSTANCE_ID = PRHA.INSTANCE_ID
+		           AND ROWNUM = 1) AS "buyer.userCN",
+		       DECODE(PRHA.REQUISITION_TYPE_CODE,
+              	'ENG',
+              (SELECT FFV.DESCRIPTION
+                 FROM FND_FLEX_VALUES FFV
+                WHERE EXISTS
+                (SELECT 1
+                         FROM IBUY_FLEX_VALUE_SET_V IFVSV
+                        WHERE IFVSV.FLEX_SET_TYPE = 'REGION_VALUE_SET_ID'
+                          AND IFVSV.INSTANCE_ID = PRHA.INSTANCE_ID
+                          AND IFVSV.FLEX_SET_VALUE = FFV.FLEX_VALUE_SET_ID)
+                  AND FFV.FLEX_VALUE = NVL(PRHA.REGION_CODE,
+								           (SELECT MAX(PRLA.REGION_CODE)
+								              FROM PR_LINES_ALL_T PRLA
+								             WHERE PRLA.REQUISITION_HEADER_ID = PRHA.REQUISITION_HEADER_ID))
+                  AND FFV.INSTANCE_ID = PRHA.INSTANCE_ID
+                  AND ROWNUM = 1),
+              (SELECT SCA.CA2_NAME
+                 FROM SSE_CONFIG_AREA2 SCA
+                WHERE SCA.CA2_CODE = NVL(PRHA.REGION_CODE,
+								           (SELECT MAX(PRLA.REGION_CODE)
+								              FROM PR_LINES_ALL_T PRLA
+								             WHERE PRLA.REQUISITION_HEADER_ID = PRHA.REQUISITION_HEADER_ID))
+                  AND ROWNUM = 1)) AS "regionName",
+		       PRHA.UEW_NUM AS "uewNo",
+		       (SELECT LISTAGG(PCTT.USER_ID, ',') WITHIN GROUP(ORDER BY PCTT.USER_ID)
+				  FROM PR_COPY_TO_USER_T PCTT
+				 WHERE PCTT.PR_HEAD_ID = PRHA.REQUISITION_HEADER_ID) AS "copyTo",
+				 (SELECT LISTAGG(TUT.LNAME, ',') WITHIN GROUP(ORDER BY PCTT.USER_ID)
+					  FROM PR_COPY_TO_USER_T PCTT, TPL_USER_T TUT
+					 WHERE TUT.USER_ID = PCTT.USER_ID
+				       AND PCTT.PR_HEAD_ID = PRHA.REQUISITION_HEADER_ID) AS "copyToName",
+				 (SELECT DECODE(NVL(MAX(OSP.SUB_PROJECT_TYPE), 2), 1, 'Y', 'N')
+		          FROM EPROCPUB.ODS_PI_ODS_SUB_PROJECTS_VI_T OSP
+		         WHERE OSP.SUB_PROJECT_NUMBER = PRHA.SUB_PROJECT_NUM
+		           AND OSP.INSTANCE_ID = PRHA.INSTANCE_ID
+		           AND ROWNUM = 1) AS "isS3Flag",
+		          PRHA.PO_AUTO_CREATE_FLAG AS "poAutoCreateFlag"
+		  FROM PR_HEADERS_ALL_T PRHA WHERE 1 = 1
